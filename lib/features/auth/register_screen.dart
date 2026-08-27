@@ -47,11 +47,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'role': _selectedRole,
         });
         if (!mounted) return;
-        if (_selectedRole == 'teacher') {
-          context.go('/teacher-dashboard');
-        } else {
-          context.go('/student-dashboard');
-        }
+        final email = Uri.encodeComponent(_emailController.text.trim());
+        final role = Uri.encodeComponent(_selectedRole);
+        final name = Uri.encodeComponent(_nameController.text.trim());
+        context.go('/verify-otp?email=$email&role=$role&name=$name');
       }
     } on AuthException catch (e) {
       if (mounted) {

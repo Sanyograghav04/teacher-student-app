@@ -128,7 +128,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ? 'Password must be at least 6 characters'
                           : null,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () => context.push('/forgot-password'),
+                        child: const Text('Forgot Password?'),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                     FilledButton(
                       onPressed: _isLoading ? null : _login,
                       style: FilledButton.styleFrom(
