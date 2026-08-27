@@ -7,7 +7,8 @@
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
-build/
+build/*
+!build/web
 .pub-cache/
 .pub/
 *.g.dart
@@ -48,3 +49,4 @@ windows/flutter/generated_plugins.cmake
 # Misc
 .DS_Store
 Thumbs.db
+
