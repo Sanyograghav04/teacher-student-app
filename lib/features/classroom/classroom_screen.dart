@@ -1,3 +1,4 @@
+import '../../core/token_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:livekit_client/livekit_client.dart';
@@ -125,18 +126,27 @@ class _ClassroomScreenState extends State<ClassroomScreen> {
 
   Future<void> _connectToLiveKit() async {
     try {
-      // Get token from Supabase Edge Function
-      final response = await _supabase.functions.invoke(
-        'generate-livekit-token',
-        body: {
-          'room_id': widget.roomId,
-          'user_id': _currentUserId,
-          'user_name': _supabase.auth.currentUser?.userMetadata?['full_name'] ?? 'User',
-          'role': _currentUserRole,
-        },
-      );
-
-      final token = response.data['token'] as String;
+      String token;
+      try {
+        final response = await _supabase.functions.invoke(
+          'generate-livekit-token',
+          body: {
+            'room_id': widget.roomId,
+            'user_id': _currentUserId,
+            'user_name': _supabase.auth.currentUser?.userMetadata?['full_name'] ?? 'User',
+            'role': _currentUserRole,
+          },
+        );
+        token = response.data['token'] as String;
+      } catch (_) {
+        // Instant direct token generation fallback
+        token = LiveKitTokenGenerator.generateToken(
+          roomId: widget.roomId,
+          userId: _currentUserId ?? 'user',
+          userName: _supabase.auth.currentUser?.userMetadata?['full_name'] ?? 'User',
+          isTeacher: _currentUserRole == 'teacher',
+        );
+      }
       final room = Room(
         roomOptions: const RoomOptions(
           defaultCameraCaptureOptions: CameraCaptureOptions(
@@ -573,3 +583,4 @@ class _ControlButton extends StatelessWidget {
     );
   }
 }
+

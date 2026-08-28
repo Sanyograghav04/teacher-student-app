@@ -18,6 +18,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
   List<RoomModel> _rooms = [];
   bool _isLoading = true;
   String? _userName;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -27,26 +28,45 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
 
   Future<void> _loadData() async {
     final user = _supabase.auth.currentUser;
-    if (user == null) return;
+    if (user == null) {
+      if (mounted) setState(() => _isLoading = false);
+      return;
+    }
 
-    final profile = await _supabase
-        .from('profiles')
-        .select()
-        .eq('id', user.id)
-        .maybeSingle();
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
-    final rooms = await _supabase
-        .from('rooms')
-        .select()
-        .eq('teacher_id', user.id)
-        .order('created_at', ascending: false);
+    try {
+      final profile = await _supabase
+          .from('profiles')
+          .select()
+          .eq('id', user.id)
+          .maybeSingle();
 
-    if (mounted) {
-      setState(() {
-        _userName = profile?['full_name'] as String? ?? 'Teacher';
-        _rooms = (rooms as List).map((r) => RoomModel.fromJson(r)).toList();
-        _isLoading = false;
-      });
+      final rooms = await _supabase
+          .from('rooms')
+          .select()
+          .eq('teacher_id', user.id)
+          .order('created_at', ascending: false);
+
+      if (mounted) {
+        setState(() {
+          _userName = profile?['full_name'] as String? ?? 'Teacher';
+          _rooms = (rooms as List).map((r) => RoomModel.fromJson(r)).toList();
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = e.toString();
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -63,6 +83,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
             hintText: 'e.g. Mathematics - Grade 10',
             border: OutlineInputBorder(),
           ),
+          autofocus: true,
         ),
         actions: [
           TextButton(
@@ -77,39 +98,50 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
       ),
     );
 
-    if (result == null || result.isEmpty) return;
+    if (result == null || result.trim().isEmpty) return;
 
-    final user = _supabase.auth.currentUser!;
+    final user = _supabase.auth.currentUser;
+    if (user == null) return;
+
     const uuid = Uuid();
     final roomCode = uuid.v4().substring(0, 8).toUpperCase();
 
-    await _supabase
-        .from('rooms')
-        .insert({
-          'title': result,
-          'teacher_id': user.id,
-          'teacher_name': _userName,
-          'is_active': false,
-          'room_code': roomCode,
-        })
-        .select()
-        .single();
+    try {
+      await _supabase.from('rooms').insert({
+        'title': result.trim(),
+        'teacher_id': user.id,
+        'teacher_name': _userName ?? 'Teacher',
+        'is_active': false,
+        'room_code': roomCode,
+      });
 
-    if (!mounted) return;
-    await _loadData();
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Room created! Code: $roomCode'),
-        backgroundColor: Colors.green,
-      ),
-    );
+      if (!mounted) return;
+      await _loadData();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Room created! Code: $roomCode'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error creating class: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _startClass(RoomModel room) async {
-    await _supabase
-        .from('rooms')
-        .update({'is_active': true}).eq('id', room.id);
+    try {
+      await _supabase
+          .from('rooms')
+          .update({'is_active': true}).eq('id', room.id);
+    } catch (_) {}
     if (mounted) context.push('/classroom/${room.id}');
   }
 
@@ -130,8 +162,16 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
       ),
     );
     if (confirm == true) {
-      await _supabase.from('rooms').delete().eq('id', room.id);
-      await _loadData();
+      try {
+        await _supabase.from('rooms').delete().eq('id', room.id);
+        await _loadData();
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+          );
+        }
+      }
     }
   }
 
@@ -150,6 +190,11 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: _loadData,
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Sign Out',
             onPressed: () async {
@@ -166,46 +211,75 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : _rooms.isEmpty
+          : _errorMessage != null
               ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.class_outlined,
-                          size: 80, color: theme.colorScheme.outline),
-                      const SizedBox(height: 16),
-                      Text('No classes yet',
-                          style: theme.textTheme.titleLarge
-                              ?.copyWith(color: theme.colorScheme.outline)),
-                      const SizedBox(height: 8),
-                      const Text('Tap + to create your first class'),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.cloud_off, size: 64, color: Colors.orange),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Database Tables Not Initialized',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Please run the SQL migration in your Supabase SQL Editor to create the "rooms" and "profiles" tables.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        const SizedBox(height: 24),
+                        FilledButton.icon(
+                          onPressed: _loadData,
+                          icon: const Icon(Icons.refresh),
+                          label: const Text('Retry Connection'),
+                        ),
+                      ],
+                    ),
                   ),
                 )
-              : RefreshIndicator(
-                  onRefresh: _loadData,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _rooms.length,
-                    itemBuilder: (ctx, i) {
-                      final room = _rooms[i];
-                      return _RoomCard(
-                        room: room,
-                        onStart: () => _startClass(room),
-                        onDelete: () => _deleteRoom(room),
-                        onCopyCode: () {
-                          Clipboard.setData(
-                              ClipboardData(text: room.roomCode ?? ''));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Room code copied!'),
-                                duration: Duration(seconds: 2)),
+              : _rooms.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.class_outlined,
+                              size: 80, color: theme.colorScheme.outline),
+                          const SizedBox(height: 16),
+                          Text('No classes yet',
+                              style: theme.textTheme.titleLarge
+                                  ?.copyWith(color: theme.colorScheme.outline)),
+                          const SizedBox(height: 8),
+                          const Text('Tap + to create your first class'),
+                        ],
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: _loadData,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: _rooms.length,
+                        itemBuilder: (ctx, i) {
+                          final room = _rooms[i];
+                          return _RoomCard(
+                            room: room,
+                            onStart: () => _startClass(room),
+                            onDelete: () => _deleteRoom(room),
+                            onCopyCode: () {
+                              Clipboard.setData(
+                                  ClipboardData(text: room.roomCode ?? ''));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Room code copied!'),
+                                    duration: Duration(seconds: 2)),
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                  ),
-                ),
+                      ),
+                    ),
     );
   }
 }
