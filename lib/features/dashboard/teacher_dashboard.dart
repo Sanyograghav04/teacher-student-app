@@ -39,11 +39,21 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
     });
 
     try {
+      // Ensure user profile exists
       final profile = await _supabase
           .from('profiles')
           .select()
           .eq('id', user.id)
           .maybeSingle();
+
+      if (profile == null) {
+        await _supabase.from('profiles').upsert({
+          'id': user.id,
+          'full_name': user.userMetadata?['full_name'] ?? 'Teacher',
+          'email': user.email ?? '',
+          'role': 'teacher',
+        });
+      }
 
       final rooms = await _supabase
           .from('rooms')
@@ -53,7 +63,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
 
       if (mounted) {
         setState(() {
-          _userName = profile?['full_name'] as String? ?? 'Teacher';
+          _userName = profile?['full_name'] as String? ?? user.userMetadata?['full_name'] ?? 'Teacher';
           _rooms = (rooms as List).map((r) => RoomModel.fromJson(r)).toList();
         });
       }
@@ -72,68 +82,112 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
 
   Future<void> _createRoom() async {
     final titleController = TextEditingController();
-    final result = await showDialog<String>(
+    bool isCreating = false;
+
+    await showDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Create New Class'),
-        content: TextField(
-          controller: titleController,
-          decoration: const InputDecoration(
-            labelText: 'Class Title',
-            hintText: 'e.g. Mathematics - Grade 10',
-            border: OutlineInputBorder(),
+      barrierDismissible: false,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Create New Class'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(
+                  labelText: 'Class Title',
+                  hintText: 'e.g. Mathematics - Grade 10',
+                  border: OutlineInputBorder(),
+                ),
+                autofocus: true,
+                enabled: !isCreating,
+              ),
+              if (isCreating) ...[
+                const SizedBox(height: 16),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                    SizedBox(width: 12),
+                    Text('Creating class...'),
+                  ],
+                ),
+              ],
+            ],
           ),
-          autofocus: true,
+          actions: [
+            TextButton(
+              onPressed: isCreating ? null : () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: isCreating
+                  ? null
+                  : () async {
+                      final title = titleController.text.trim();
+                      if (title.isEmpty) return;
+
+                      setDialogState(() => isCreating = true);
+
+                      final user = _supabase.auth.currentUser;
+                      if (user == null) {
+                        Navigator.pop(ctx);
+                        return;
+                      }
+
+                      const uuid = Uuid();
+                      final roomCode = uuid.v4().substring(0, 8).toUpperCase();
+
+                      try {
+                        // 1. Ensure profile exists to satisfy foreign key
+                        await _supabase.from('profiles').upsert({
+                          'id': user.id,
+                          'full_name': _userName ?? user.userMetadata?['full_name'] ?? 'Teacher',
+                          'email': user.email ?? '',
+                          'role': 'teacher',
+                        });
+
+                        // 2. Insert new room
+                        await _supabase.from('rooms').insert({
+                          'title': title,
+                          'teacher_id': user.id,
+                          'teacher_name': _userName ?? user.userMetadata?['full_name'] ?? 'Teacher',
+                          'is_active': false,
+                          'room_code': roomCode,
+                        });
+
+                        if (!mounted) return;
+                        Navigator.pop(ctx);
+                        await _loadData();
+
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Class "$title" created! Code: $roomCode'),
+                              backgroundColor: Colors.green,
+                              duration: const Duration(seconds: 4),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        setDialogState(() => isCreating = false);
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Failed to create room: $e'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    },
+              child: const Text('Create'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, titleController.text),
-            child: const Text('Create'),
-          ),
-        ],
       ),
     );
-
-    if (result == null || result.trim().isEmpty) return;
-
-    final user = _supabase.auth.currentUser;
-    if (user == null) return;
-
-    const uuid = Uuid();
-    final roomCode = uuid.v4().substring(0, 8).toUpperCase();
-
-    try {
-      await _supabase.from('rooms').insert({
-        'title': result.trim(),
-        'teacher_id': user.id,
-        'teacher_name': _userName ?? 'Teacher',
-        'is_active': false,
-        'room_code': roomCode,
-      });
-
-      if (!mounted) return;
-      await _loadData();
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Room created! Code: $roomCode'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error creating class: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
   }
 
   Future<void> _startClass(RoomModel room) async {
@@ -221,20 +275,20 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                         const Icon(Icons.cloud_off, size: 64, color: Colors.orange),
                         const SizedBox(height: 16),
                         const Text(
-                          'Database Tables Not Initialized',
+                          'Connection Issue',
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          'Please run the SQL migration in your Supabase SQL Editor to create the "rooms" and "profiles" tables.',
+                        Text(
+                          _errorMessage!,
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.grey),
+                          style: const TextStyle(color: Colors.grey, fontSize: 13),
                         ),
                         const SizedBox(height: 24),
                         FilledButton.icon(
                           onPressed: _loadData,
                           icon: const Icon(Icons.refresh),
-                          label: const Text('Retry Connection'),
+                          label: const Text('Retry'),
                         ),
                       ],
                     ),
@@ -253,6 +307,12 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                                   ?.copyWith(color: theme.colorScheme.outline)),
                           const SizedBox(height: 8),
                           const Text('Tap + to create your first class'),
+                          const SizedBox(height: 20),
+                          FilledButton.icon(
+                            onPressed: _createRoom,
+                            icon: const Icon(Icons.add),
+                            label: const Text('Create a Class'),
+                          ),
                         ],
                       ),
                     )
