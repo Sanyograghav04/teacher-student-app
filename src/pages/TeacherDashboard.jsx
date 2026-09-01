@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import Navbar from '../components/Navbar';
+import StudentFeesManager from '../components/StudentFeesManager';
 import { 
   Plus, 
   Video, 
@@ -14,11 +15,14 @@ import {
   AlertCircle, 
   Loader2, 
   BookOpen,
-  Sparkles
+  Sparkles,
+  Users,
+  LayoutGrid
 } from 'lucide-react';
 
 export default function TeacherDashboard() {
   const { user, profile } = useAuth();
+  const [activeTab, setActiveTab] = useState('classes'); // 'classes' or 'students'
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -133,142 +137,180 @@ export default function TeacherDashboard() {
               Teacher Control Center
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Welcome back, {profile?.full_name || 'Teacher'} ??
+              Welcome back, {profile?.full_name || 'Teacher'} 👋
             </h2>
             <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-              Manage your classrooms, generate invite codes, and host live sessions.
+              Host live classes, track student enrollments, and manage fee structures.
             </p>
           </div>
 
           <div className="flex items-center gap-3 z-10">
-            <button
-              onClick={loadRooms}
-              className="p-3 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-sm transition-colors"
-              title="Refresh classes"
-            >
-              <RotateCcw className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold text-sm shadow-xl shadow-rose-600/30 transition-all hover:scale-[1.02]"
-            >
-              <Plus className="w-5 h-5" />
-              <span>Create Class</span>
-            </button>
+            {activeTab === 'classes' && (
+              <>
+                <button
+                  onClick={loadRooms}
+                  className="p-3 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-sm transition-colors"
+                  title="Refresh classes"
+                >
+                  <RotateCcw className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold text-sm shadow-xl shadow-rose-600/30 transition-all hover:scale-[1.02]"
+                >
+                  <Plus className="w-5 h-5" />
+                  <span>Create Class</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
 
-        {/* Error Alert */}
-        {error && (
-          <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-            <span>{error}</span>
-          </div>
-        )}
+        {/* Tab Navigation */}
+        <div className="flex items-center gap-2 p-1.5 bg-slate-200/80 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-fit mb-8 shadow-sm">
+          <button
+            onClick={() => setActiveTab('classes')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs transition-all ${
+              activeTab === 'classes'
+                ? 'bg-white dark:bg-slate-800 text-rose-600 dark:text-rose-400 shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <LayoutGrid className="w-4 h-4" />
+            <span>Live Classrooms ({rooms.length})</span>
+          </button>
 
-        {/* Rooms Grid */}
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-24">
-            <Loader2 className="w-10 h-10 text-rose-500 animate-spin mb-4" />
-            <p className="text-sm text-slate-500 dark:text-slate-400">Loading your classrooms...</p>
-          </div>
-        ) : rooms.length === 0 ? (
-          <div className="bg-white/80 dark:bg-slate-900/50 border border-dashed border-slate-300 dark:border-slate-800 rounded-3xl p-12 text-center flex flex-col items-center justify-center shadow-sm">
-            <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-4">
-              <BookOpen className="w-8 h-8" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">No classrooms created yet</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mb-6">
-              Create your first live classroom to get a shareable code for your students.
-            </p>
-            <button
-              onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold text-sm shadow-lg shadow-rose-600/30 transition-all"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Create Your First Class</span>
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {rooms.map((room) => (
-              <div
-                key={room.id}
-                className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 hover:border-rose-500/50 rounded-3xl p-6 transition-all shadow-sm hover:shadow-xl hover:shadow-rose-500/5 flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-3 mb-4">
-                    <div className="p-3 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
-                      <Video className="w-6 h-6" />
+          <button
+            onClick={() => setActiveTab('students')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs transition-all ${
+              activeTab === 'students'
+                ? 'bg-white dark:bg-slate-800 text-rose-600 dark:text-rose-400 shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Students & Fees Tracker</span>
+          </button>
+        </div>
+
+        {/* Tab 1: Live Classrooms */}
+        {activeTab === 'classes' && (
+          <div>
+            {error && (
+              <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-24">
+                <Loader2 className="w-10 h-10 text-rose-500 animate-spin mb-4" />
+                <p className="text-sm text-slate-500 dark:text-slate-400">Loading your classrooms...</p>
+              </div>
+            ) : rooms.length === 0 ? (
+              <div className="bg-white/80 dark:bg-slate-900/50 border border-dashed border-slate-300 dark:border-slate-800 rounded-3xl p-12 text-center flex flex-col items-center justify-center shadow-sm">
+                <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-4">
+                  <BookOpen className="w-8 h-8" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">No classrooms created yet</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mb-6">
+                  Create your first live classroom to get a shareable code for your students.
+                </p>
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold text-sm shadow-lg shadow-rose-600/30 transition-all"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Create Your First Class</span>
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {rooms.map((room) => (
+                  <div
+                    key={room.id}
+                    className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 hover:border-rose-500/50 rounded-3xl p-6 transition-all shadow-sm hover:shadow-xl hover:shadow-rose-500/5 flex flex-col justify-between group"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between gap-3 mb-4">
+                        <div className="p-3 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+                          <Video className="w-6 h-6" />
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          {room.is_active ? (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                              Live
+                            </span>
+                          ) : (
+                            <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-medium">
+                              Inactive
+                            </span>
+                          )}
+
+                          <button
+                            onClick={(e) => handleDeleteRoom(room.id, e)}
+                            className="p-2 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                            title="Delete Class"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors line-clamp-1">
+                        {room.title}
+                      </h3>
+
+                      <div className="mt-4 flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60">
+                        <div className="text-left">
+                          <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-400 tracking-wider">
+                            Room Code
+                          </p>
+                          <p className="text-sm font-mono font-bold text-rose-600 dark:text-rose-400 tracking-widest">
+                            {room.room_code || 'N/A'}
+                          </p>
+                        </div>
+                        <button
+                          onClick={(e) => handleCopyCode(room.room_code, e)}
+                          className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium border border-slate-200 dark:border-transparent transition-colors shadow-sm"
+                        >
+                          {copiedCode === room.room_code ? (
+                            <>
+                              <Check className="w-3.5 h-3.5 text-emerald-500" />
+                              <span className="text-emerald-500">Copied</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3.5 h-3.5" />
+                              <span>Copy</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      {room.is_active ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                          Live
-                        </span>
-                      ) : (
-                        <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-medium">
-                          Inactive
-                        </span>
-                      )}
-
+                    <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80">
                       <button
-                        onClick={(e) => handleDeleteRoom(room.id, e)}
-                        className="p-2 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-500/10 transition-colors"
-                        title="Delete Class"
+                        onClick={() => handleStartClass(room)}
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold text-sm shadow-md shadow-rose-600/20 transition-all"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Play className="w-4 h-4 fill-white" />
+                        <span>{room.is_active ? 'Rejoin Class' : 'Start Class'}</span>
                       </button>
                     </div>
                   </div>
-
-                  <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors line-clamp-1">
-                    {room.title}
-                  </h3>
-
-                  {/* Room Code Badge */}
-                  <div className="mt-4 flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60">
-                    <div className="text-left">
-                      <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-400 tracking-wider">
-                        Room Code
-                      </p>
-                      <p className="text-sm font-mono font-bold text-rose-600 dark:text-rose-400 tracking-widest">
-                        {room.room_code || 'N/A'}
-                      </p>
-                    </div>
-                    <button
-                      onClick={(e) => handleCopyCode(room.room_code, e)}
-                      className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium border border-slate-200 dark:border-transparent transition-colors shadow-sm"
-                    >
-                      {copiedCode === room.room_code ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 text-emerald-500" />
-                          <span className="text-emerald-500">Copied</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3.5 h-3.5" />
-                          <span>Copy</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80">
-                  <button
-                    onClick={() => handleStartClass(room)}
-                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold text-sm shadow-md shadow-rose-600/20 transition-all"
-                  >
-                    <Play className="w-4 h-4 fill-white" />
-                    <span>{room.is_active ? 'Rejoin Class' : 'Start Class'}</span>
-                  </button>
-                </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
+        )}
+
+        {/* Tab 2: Students & Fees Tracker */}
+        {activeTab === 'students' && (
+          <StudentFeesManager />
         )}
       </main>
 
