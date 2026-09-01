@@ -2,7 +2,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
-import { generateLiveKitToken, LIVEKIT_WS_URL } from '../lib/livekit';
+import { generateLiveKitToken, LIVEKIT_URL } from '../lib/livekit';
 import {
   LiveKitRoom,
   VideoConference,
@@ -169,7 +169,12 @@ export default function Classroom() {
         const name = profile?.full_name || (isTeacher ? 'Teacher' : 'Student');
         const roomName = `room_${room.id}`;
 
-        const jwtToken = await generateLiveKitToken(roomName, identity, name, isTeacher);
+        const jwtToken = await generateLiveKitToken({
+          roomId: roomName,
+          userId: identity,
+          userName: name,
+          isTeacher: isTeacher,
+        });
         if (isMounted) setToken(jwtToken);
       } catch (err) {
         console.error('Failed to initialize classroom:', err);
@@ -309,7 +314,7 @@ export default function Classroom() {
           video={true}
           audio={true}
           token={token}
-          serverUrl={LIVEKIT_WS_URL}
+          serverUrl={LIVEKIT_URL}
           data-lk-theme="default"
           className="h-full w-full"
           onDisconnected={handleLeave}
