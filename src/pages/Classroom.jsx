@@ -95,8 +95,8 @@ export default function Classroom() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white">
-        <div className="w-16 h-16 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center mb-4">
-          <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-500/20 border border-indigo-500/30 flex items-center justify-center mb-4">
+          <Loader2 className="w-8 h-8 text-rose-400 animate-spin" />
         </div>
         <h3 className="text-lg font-bold">Connecting to Live Classroom...</h3>
         <p className="text-xs text-slate-400 mt-1">Preparing high-definition video & audio stream</p>
@@ -115,7 +115,7 @@ export default function Classroom() {
           <p className="text-sm text-slate-400 mb-6">{error}</p>
           <button
             onClick={() => navigate('/')}
-            className="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors"
+            className="w-full py-3 px-4 rounded-xl bg-gradient-to-tr from-rose-600 to-amber-500 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors"
           >
             Return to Dashboard
           </button>
@@ -129,7 +129,7 @@ export default function Classroom() {
       {/* Classroom Top Bar */}
       <header className="h-16 bg-slate-900/90 border-b border-slate-800 px-4 sm:px-6 flex items-center justify-between shrink-0 z-30">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-600/30">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-rose-600 to-amber-500 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-600/30">
             <GraduationCap className="w-5 h-5" />
           </div>
           <div>
@@ -157,7 +157,7 @@ export default function Classroom() {
               className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 hover:border-slate-600 text-xs font-medium text-slate-200 transition-colors"
             >
               <span className="text-slate-400">Code:</span>
-              <span className="font-mono font-bold text-indigo-400">{roomData.room_code}</span>
+              <span className="font-mono font-bold text-rose-400">{roomData.room_code}</span>
               {copied ? (
                 <Check className="w-3.5 h-3.5 text-emerald-400 ml-1" />
               ) : (
@@ -194,3 +194,4 @@ export default function Classroom() {
     </div>
   );
 }
+

@@ -132,7 +132,7 @@ export default function TeacherDashboard() {
           <div className="absolute right-0 top-0 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
 
           <div className="z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-rose-400 text-xs font-semibold uppercase tracking-wider mb-3">
               <Sparkles className="w-3.5 h-3.5" />
               Teacher Control Center
             </div>
@@ -154,7 +154,7 @@ export default function TeacherDashboard() {
             </button>
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-xl shadow-indigo-600/30 transition-all hover:scale-[1.02]"
+              className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 hover:bg-indigo-500 text-white font-semibold text-sm shadow-xl shadow-indigo-600/30 transition-all hover:scale-[1.02]"
             >
               <Plus className="w-5 h-5" />
               <span>Create Class</span>
@@ -187,7 +187,7 @@ export default function TeacherDashboard() {
             </p>
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 transition-all"
+              className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 transition-all"
             >
               <Plus className="w-4 h-4" />
               <span>Create Your First Class</span>
@@ -202,7 +202,7 @@ export default function TeacherDashboard() {
               >
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-4">
-                    <div className="p-3 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    <div className="p-3 rounded-2xl bg-indigo-500/10 text-rose-400 border border-indigo-500/20">
                       <Video className="w-6 h-6" />
                     </div>
 
@@ -238,7 +238,7 @@ export default function TeacherDashboard() {
                       <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
                         Room Code
                       </p>
-                      <p className="text-sm font-mono font-bold text-indigo-400 tracking-widest">
+                      <p className="text-sm font-mono font-bold text-rose-400 tracking-widest">
                         {room.room_code || 'N/A'}
                       </p>
                     </div>
@@ -264,7 +264,7 @@ export default function TeacherDashboard() {
                 <div className="mt-6 pt-4 border-t border-slate-800/80">
                   <button
                     onClick={() => handleStartClass(room)}
-                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-md shadow-indigo-600/20 transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 hover:bg-indigo-500 text-white font-semibold text-sm shadow-md shadow-indigo-600/20 transition-all"
                   >
                     <Play className="w-4 h-4 fill-white" />
                     <span>{room.is_active ? 'Rejoin Class' : 'Start Class'}</span>
@@ -313,7 +313,7 @@ export default function TeacherDashboard() {
                 <button
                   type="submit"
                   disabled={creating || !title.trim()}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 hover:bg-indigo-500 text-white text-sm font-semibold shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50"
                 >
                   {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Create Class</span>}
                 </button>
@@ -325,3 +325,4 @@ export default function TeacherDashboard() {
     </div>
   );
 }
+

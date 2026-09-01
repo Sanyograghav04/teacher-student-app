@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { GraduationCap, Mail, Lock, User, ShieldCheck, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
+import { Gem, Mail, Lock, User, ShieldCheck, ArrowRight, AlertCircle, Loader2, GraduationCap } from 'lucide-react';
 
 export default function Register() {
   const [fullName, setFullName] = useState('');
@@ -20,7 +20,6 @@ export default function Register() {
 
     try {
       await signUp(email.trim(), password, fullName.trim(), role);
-      // Navigate to OTP verification page
       navigate(`/verify-otp?email=${encodeURIComponent(email.trim())}`);
     } catch (err) {
       setError(err.message || 'Failed to create account.');
@@ -31,22 +30,27 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-rose-600/15 blur-[130px] rounded-full pointer-events-none" />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center z-10">
-        <div className="inline-flex w-16 h-16 rounded-2xl bg-indigo-600 items-center justify-center text-white shadow-xl shadow-indigo-500/30 mb-4">
-          <GraduationCap className="w-9 h-9" />
+        <div className="inline-flex w-16 h-16 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-500 items-center justify-center text-white shadow-xl shadow-rose-500/30 mb-4">
+          <Gem className="w-8 h-8" />
         </div>
-        <h2 className="text-3xl font-extrabold text-white tracking-tight">
-          Create an Account
-        </h2>
+        <div className="flex items-center justify-center gap-2">
+          <h2 className="text-3xl font-extrabold text-white tracking-tight">
+            Join Gurukul
+          </h2>
+          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/25">
+            by Ruby
+          </span>
+        </div>
         <p className="mt-2 text-sm text-slate-400">
-          Join ClassRoom as a Teacher or Student
+          Create your account as a Teacher or Student
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10 px-4 sm:px-0">
-        <div className="bg-slate-900/90 border border-slate-800 py-8 px-6 shadow-2xl rounded-2xl sm:px-10 backdrop-blur-xl">
+        <div className="bg-slate-900/90 border border-slate-800 py-8 px-6 shadow-2xl rounded-3xl sm:px-10 backdrop-blur-xl">
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-3">
               <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
@@ -58,7 +62,7 @@ export default function Register() {
             {/* Role Selection */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
-                I am a:
+                I am registering as:
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
@@ -66,7 +70,7 @@ export default function Register() {
                   onClick={() => setRole('teacher')}
                   className={`py-3 px-4 rounded-xl border text-sm font-semibold flex items-center justify-center gap-2 transition-all ${
                     role === 'teacher'
-                      ? 'bg-indigo-600/20 border-indigo-500 text-indigo-400 shadow-md shadow-indigo-500/10'
+                      ? 'bg-rose-600/20 border-rose-500 text-rose-400 shadow-md shadow-rose-500/10'
                       : 'bg-slate-800/60 border-slate-700 text-slate-400 hover:border-slate-600'
                   }`}
                 >
@@ -78,7 +82,7 @@ export default function Register() {
                   onClick={() => setRole('student')}
                   className={`py-3 px-4 rounded-xl border text-sm font-semibold flex items-center justify-center gap-2 transition-all ${
                     role === 'student'
-                      ? 'bg-indigo-600/20 border-indigo-500 text-indigo-400 shadow-md shadow-indigo-500/10'
+                      ? 'bg-rose-600/20 border-rose-500 text-rose-400 shadow-md shadow-rose-500/10'
                       : 'bg-slate-800/60 border-slate-700 text-slate-400 hover:border-slate-600'
                   }`}
                 >
@@ -102,8 +106,8 @@ export default function Register() {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g. Professor Sarah"
-                  className="block w-full pl-10 pr-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all"
+                  placeholder="e.g. Dr. Ruby Sharma"
+                  className="block w-full pl-10 pr-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm transition-all"
                 />
               </div>
             </div>
@@ -122,8 +126,8 @@ export default function Register() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@school.com"
-                  className="block w-full pl-10 pr-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all"
+                  placeholder="name@gurukul.com"
+                  className="block w-full pl-10 pr-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm transition-all"
                 />
               </div>
             </div>
@@ -144,7 +148,7 @@ export default function Register() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 6 characters"
-                  className="block w-full pl-10 pr-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all"
+                  className="block w-full pl-10 pr-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm transition-all"
                 />
               </div>
             </div>
@@ -152,7 +156,7 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 border border-transparent rounded-xl shadow-lg shadow-indigo-600/30 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-3"
+              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 border border-transparent rounded-xl shadow-lg shadow-rose-600/30 text-sm font-semibold text-white bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-3"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -168,7 +172,7 @@ export default function Register() {
           <div className="mt-6 text-center">
             <p className="text-xs text-slate-400">
               Already have an account?{' '}
-              <Link to="/login" className="font-semibold text-indigo-400 hover:text-indigo-300">
+              <Link to="/login" className="font-semibold text-rose-400 hover:text-rose-300">
                 Sign In
               </Link>
             </p>

@@ -96,7 +96,7 @@ export default function StudentDashboard() {
           <div className="absolute right-0 top-0 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
 
           <div className="max-w-xl z-10 relative">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-rose-400 text-xs font-semibold uppercase tracking-wider mb-3">
               <Sparkles className="w-3.5 h-3.5" />
               Student Portal
             </div>
@@ -126,7 +126,7 @@ export default function StudentDashboard() {
               <button
                 type="submit"
                 disabled={joining || !roomCode.trim()}
-                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-xl shadow-indigo-600/30 transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 hover:bg-indigo-500 text-white font-semibold text-sm shadow-xl shadow-indigo-600/30 transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
               >
                 {joining ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -193,7 +193,7 @@ export default function StudentDashboard() {
                       Live Now
                     </span>
                     <span className="text-xs text-slate-400 font-mono">
-                      Code: <strong className="text-indigo-400 font-bold">{room.room_code}</strong>
+                      Code: <strong className="text-rose-400 font-bold">{room.room_code}</strong>
                     </span>
                   </div>
 
@@ -204,7 +204,7 @@ export default function StudentDashboard() {
                 <div className="mt-6 pt-4 border-t border-slate-800">
                   <button
                     onClick={() => navigate(`/classroom/${room.id}`)}
-                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-md shadow-indigo-600/20 transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 hover:bg-indigo-500 text-white font-semibold text-sm shadow-md shadow-indigo-600/20 transition-all"
                   >
                     <Play className="w-4 h-4 fill-white" />
                     <span>Join Class</span>
@@ -218,3 +218,4 @@ export default function StudentDashboard() {
     </div>
   );
 }
+
