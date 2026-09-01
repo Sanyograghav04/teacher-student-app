@@ -1,52 +1,6 @@
+node_modules/
+dist/
+.env.local
 .env
-*.env.local
-*.env.*.local
-
-# Flutter/Dart
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-build/*
-!build/web
-.pub-cache/
-.pub/
-*.g.dart
-*.freezed.dart
-
-# Android
-android/.gradle
-android/local.properties
-android/key.properties
-android/app/google-services.json
-
-# iOS
-ios/Pods/
-ios/.symlinks/
-ios/Flutter/flutter_export_environment.sh
-ios/Flutter/App.framework
-ios/Flutter/Flutter.framework
-ios/Flutter/Flutter.podspec
-ios/Flutter/Generated.xcconfig
-ios/Runner/GeneratedPluginRegistrant.*
-
-# macOS
-macos/Pods/
-macos/Flutter/GeneratedPluginRegistrant.swift
-macos/Flutter/Flutter-Debug.xcconfig
-macos/Flutter/Flutter-Release.xcconfig
-
-# Windows
-windows/flutter/generated_plugin_registrant.cc
-windows/flutter/generated_plugin_registrant.h
-windows/flutter/generated_plugins.cmake
-
-# IDE
-.idea/
-.vscode/settings.json
-*.iml
-
-# Misc
 .DS_Store
 Thumbs.db
-
