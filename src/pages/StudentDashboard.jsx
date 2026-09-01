@@ -27,7 +27,6 @@ export default function StudentDashboard() {
   useEffect(() => {
     loadActiveRooms();
 
-    // Listen to live room updates
     const subscription = supabase
       .channel('public:rooms')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'rooms' }, () => {
@@ -87,29 +86,29 @@ export default function StudentDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Join by Code Banner */}
-        <div className="bg-gradient-to-r from-indigo-900/40 via-slate-900 to-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-xl relative overflow-hidden mb-8 shadow-2xl">
-          <div className="absolute right-0 top-0 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
+        <div className="bg-gradient-to-r from-rose-600/10 via-amber-500/10 to-slate-100 dark:from-rose-950/40 dark:via-slate-900 dark:to-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-xl relative overflow-hidden mb-8 shadow-xl">
+          <div className="absolute right-0 top-0 w-96 h-96 bg-rose-500/10 blur-[100px] rounded-full pointer-events-none" />
 
           <div className="max-w-xl z-10 relative">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-rose-400 text-xs font-semibold uppercase tracking-wider mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-semibold uppercase tracking-wider mb-3">
               <Sparkles className="w-3.5 h-3.5" />
               Student Portal
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Ready to learn, {profile?.full_name || 'Student'}? ??
             </h2>
-            <p className="text-sm text-slate-400 mt-1 mb-6">
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 mb-6">
               Enter the room code given by your teacher to jump straight into the live session.
             </p>
 
             <form onSubmit={handleJoinByCode} className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                   <KeyRound className="h-5 h-5" />
                 </div>
                 <input
@@ -119,14 +118,14 @@ export default function StudentDashboard() {
                   value={roomCode}
                   onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
                   placeholder="Enter 8-digit Room Code"
-                  className="block w-full pl-10 pr-4 py-3.5 bg-slate-800/90 border border-slate-700 rounded-2xl text-white placeholder-slate-500 uppercase tracking-widest font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold"
+                  className="block w-full pl-10 pr-4 py-3.5 bg-white dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white placeholder-slate-400 uppercase tracking-widest font-mono text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all font-bold shadow-sm"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={joining || !roomCode.trim()}
-                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 hover:bg-indigo-500 text-white font-semibold text-sm shadow-xl shadow-indigo-600/30 transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold text-sm shadow-xl shadow-rose-600/30 transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
               >
                 {joining ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -142,7 +141,7 @@ export default function StudentDashboard() {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-3">
+          <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm flex items-start gap-3">
             <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
@@ -151,12 +150,12 @@ export default function StudentDashboard() {
         {/* Live Classes Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
-            <Radio className="w-5 h-5 text-emerald-400 animate-pulse" />
-            <h3 className="text-xl font-bold text-white">Active Live Sessions</h3>
+            <Radio className="w-5 h-5 text-emerald-500 animate-pulse" />
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">Active Live Sessions</h3>
           </div>
           <button
             onClick={loadActiveRooms}
-            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+            className="p-2.5 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-colors shadow-sm"
             title="Refresh"
           >
             <RotateCcw className="w-4 h-4" />
@@ -166,16 +165,16 @@ export default function StudentDashboard() {
         {/* Active Classes Grid */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 text-indigo-500 animate-spin mb-3" />
-            <p className="text-sm text-slate-400">Looking for active classes...</p>
+            <Loader2 className="w-8 h-8 text-rose-500 animate-spin mb-3" />
+            <p className="text-sm text-slate-500 dark:text-slate-400">Looking for active classes...</p>
           </div>
         ) : activeRooms.length === 0 ? (
-          <div className="bg-slate-900/40 border border-slate-800 rounded-3xl p-12 text-center flex flex-col items-center justify-center">
-            <div className="w-16 h-16 rounded-2xl bg-slate-800/80 flex items-center justify-center text-slate-500 mb-4">
+          <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center flex flex-col items-center justify-center shadow-sm">
+            <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-4">
               <Video className="w-8 h-8" />
             </div>
-            <h4 className="text-lg font-bold text-white mb-1">No live classes right now</h4>
-            <p className="text-sm text-slate-400 max-w-sm">
+            <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-1">No live classes right now</h4>
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm">
               Classes will appear here in real-time as soon as your teacher starts a session.
             </p>
           </div>
@@ -184,27 +183,27 @@ export default function StudentDashboard() {
             {activeRooms.map((room) => (
               <div
                 key={room.id}
-                className="bg-slate-900/80 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-6 transition-all hover:shadow-2xl hover:shadow-indigo-500/10 flex flex-col justify-between"
+                className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 hover:border-rose-500/50 rounded-3xl p-6 transition-all shadow-sm hover:shadow-xl hover:shadow-rose-500/10 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                       Live Now
                     </span>
-                    <span className="text-xs text-slate-400 font-mono">
-                      Code: <strong className="text-rose-400 font-bold">{room.room_code}</strong>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                      Code: <strong className="text-rose-600 dark:text-rose-400 font-bold">{room.room_code}</strong>
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-lg text-white mb-1">{room.title}</h3>
-                  <p className="text-xs text-slate-400">Teacher: {room.teacher_name}</p>
+                  <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-1">{room.title}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Teacher: {room.teacher_name}</p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-800">
+                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
                   <button
                     onClick={() => navigate(`/classroom/${room.id}`)}
-                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 hover:bg-indigo-500 text-white font-semibold text-sm shadow-md shadow-indigo-600/20 transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold text-sm shadow-md shadow-rose-600/20 transition-all"
                   >
                     <Play className="w-4 h-4 fill-white" />
                     <span>Join Class</span>
@@ -218,4 +217,3 @@ export default function StudentDashboard() {
     </div>
   );
 }
-
