@@ -1,0 +1,9 @@
+{
+  "appId": "com.gurukul.ruby",
+  "appName": "Gurukul by Ruby",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}
