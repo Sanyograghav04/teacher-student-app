@@ -33,7 +33,7 @@ export default function Register() {
 
     try {
       await signUp(email.trim(), password, fullName.trim(), role);
-      navigate(`/verify-otp?email=${encodeURIComponent(email.trim())}`);
+      navigate(`/verify-email?email=${encodeURIComponent(email.trim())}`);
     } catch (err) {
       setError(err.message || 'Failed to create account.');
     } finally {
@@ -224,3 +224,4 @@ export default function Register() {
     </div>
   );
 }
+
