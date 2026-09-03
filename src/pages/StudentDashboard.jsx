@@ -8,7 +8,7 @@ import {
   KeyRound, Video, Play, RotateCcw, AlertCircle, Loader2, Radio, 
   ArrowRight, FileText, CreditCard, Copy, Check, Clock, Sparkles,
   Calendar, BookOpen, MessageCircle, Heart, CheckCircle2, BookmarkCheck,
-  GraduationCap
+  GraduationCap, Sun, CloudSun, Moon
 } from 'lucide-react';
 
 const DEFAULT_CHECKLIST = [
@@ -97,9 +97,9 @@ export default function StudentDashboard() {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return { greeting: 'Shubh Prabhat / Good Morning', emoji: 'â˜€ï¸' };
-    if (hour < 17) return { greeting: 'Good Afternoon', emoji: 'ðŸŒ¤ï¸' };
-    return { greeting: 'Good Evening', emoji: 'ðŸŒ†' };
+    if (hour < 12) return { text: 'Shubh Prabhat / Good Morning', icon: <Sun className="w-7 h-7 text-amber-300 inline-block align-middle ml-2" /> };
+    if (hour < 17) return { text: 'Good Afternoon', icon: <CloudSun className="w-7 h-7 text-amber-300 inline-block align-middle ml-2" /> };
+    return { text: 'Good Evening', icon: <Moon className="w-7 h-7 text-indigo-200 inline-block align-middle ml-2" /> };
   };
 
   const greeting = getGreeting();
@@ -125,12 +125,13 @@ export default function StudentDashboard() {
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-semibold mb-3 text-brand-100">
                 <Calendar className="w-3.5 h-3.5 text-amber-300" />
                 <span>{todayFormatted}</span>
-                <span className="text-white/40">â€¢</span>
+                <span className="text-white/40">•</span>
                 <span>Gurukul by Ruby Learner</span>
               </div>
               
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
-                {greeting.greeting}, {displayName}! {greeting.emoji}
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight flex items-center flex-wrap gap-2">
+                <span>{greeting.text}, {displayName}!</span>
+                {greeting.icon}
               </h2>
               
               <p className="mt-2 text-brand-100 text-sm sm:text-base font-normal leading-relaxed">

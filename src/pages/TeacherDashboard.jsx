@@ -8,11 +8,11 @@ import ClassNotesManager from '../components/ClassNotesManager';
 import { 
   Plus, Video, Trash2, Copy, Check, Play, RotateCcw, AlertCircle, Loader2, 
   Sparkles, Users, Clock, X, FileText, Share2, Pin, MessageCircle, Heart,
-  BookOpen, Calendar, HelpCircle, CheckCircle2
+  BookOpen, Calendar, HelpCircle, CheckCircle2, Sun, CloudSun, Moon, Rocket
 } from 'lucide-react';
 
 const DAILY_QUOTES = [
-  { quote: "à¤µà¤¿à¤¦à¥à¤¯à¤¾ à¤¦à¤¦à¤¾à¤¤à¤¿ à¤µà¤¿à¤¨à¤¯à¤‚ â€” True education brings humility, wisdom, and character.", author: "Gurukul Tradition" },
+  { quote: "Vidya Dadati Vinayam - True education brings humility, wisdom, and character.", author: "Gurukul Tradition" },
   { quote: "A teacher affects eternity; they can never tell where their influence stops.", author: "Henry Adams" },
   { quote: "Education is not the filling of a pail, but the lighting of a fire.", author: "W.B. Yeats" },
   { quote: "The beautiful thing about learning is that no one can take it away from you.", author: "B.B. King" }
@@ -129,13 +129,11 @@ export default function TeacherDashboard() {
     const updated = notes.filter(n => n.id !== id);
     setNotes(updated);
     localStorage.setItem('gurukul_teacher_notes', JSON.stringify(updated));
-  };
-
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return { greeting: 'Shubh Prabhat / Good Morning', emoji: 'â˜€ï¸' };
-    if (hour < 17) return { greeting: 'Good Afternoon', emoji: 'ðŸŒ¤ï¸' };
-    return { greeting: 'Good Evening', emoji: 'ðŸŒ†' };
+    if (hour < 12) return { text: 'Shubh Prabhat / Good Morning', icon: <Sun className="w-7 h-7 text-amber-300 inline-block align-middle ml-2" /> };
+    if (hour < 17) return { text: 'Good Afternoon', icon: <CloudSun className="w-7 h-7 text-amber-300 inline-block align-middle ml-2" /> };
+    return { text: 'Good Evening', icon: <Moon className="w-7 h-7 text-indigo-200 inline-block align-middle ml-2" /> };
   };
 
   const todayGreeting = getGreeting();
@@ -162,11 +160,12 @@ export default function TeacherDashboard() {
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-semibold mb-3 text-brand-100">
                 <Calendar className="w-3.5 h-3.5 text-amber-300" />
                 <span>{todayFormatted}</span>
-                <span className="text-white/40">â€¢</span>
+                <span className="text-white/40">•</span>
                 <span>Gurukul by Ruby Faculty</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                {todayGreeting.greeting}, {displayName}! {todayGreeting.emoji}
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center flex-wrap gap-2">
+                <span>{todayGreeting.text}, {displayName}!</span>
+                {todayGreeting.icon}
               </h2>
               <p className="mt-2 text-brand-100 text-sm sm:text-base font-normal leading-relaxed">
                 Welcome to your teaching desk. Start live lectures for your batches, share links directly on WhatsApp, and manage student fees.
@@ -185,7 +184,8 @@ export default function TeacherDashboard() {
                 className="inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl bg-white text-brand-700 hover:bg-brand-50 font-bold text-sm shadow-lg hover:scale-105 active:scale-95 transition-all duration-200"
               >
                 <Plus className="w-5 h-5 stroke-[2.5]" />
-                <span>Start New Live Class ðŸš€</span>
+                <span>Start New Live Class</span>
+                <Rocket className="w-4 h-4 text-amber-500" />
               </button>
               
               <div className="flex items-center justify-around bg-black/20 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 text-xs">
