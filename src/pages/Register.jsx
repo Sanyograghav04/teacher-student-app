@@ -226,9 +226,9 @@ export default function Register() {
                   { ok: hasNumber, label: '1 Number' },
                   { ok: hasSpecial, label: '1 Symbol (!@#$)' },
                 ].map((r) => (
-                  <div key={r.label} className={lex items-center gap-1.5 }>
-                    <span className={w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9px] font-bold }>
-                      âœ“
+                  <div key={r.label} className={`flex items-center gap-1.5 ${r.ok ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                    <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9px] font-bold ${r.ok ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'}`}>
+                      ✓
                     </span>
                     <span>{r.label}</span>
                   </div>
