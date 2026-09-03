@@ -4,7 +4,7 @@ const ThemeContext = createContext({});
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('gurukul-theme') || 'dark';
+    return localStorage.getItem('gurukul-theme') || 'light';
   });
 
   useEffect(() => {

@@ -17,7 +17,7 @@ function DashboardRouter() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center text-slate-800 dark:text-white transition-colors">
+      <div className="min-h-screen doodle-bg flex flex-col items-center justify-center text-slate-800 dark:text-white transition-colors">
         <Loader2 className="w-8 h-8 text-brand-600 animate-spin mb-3" />
         <p className="text-xs text-slate-500 dark:text-slate-400">Loading your profile...</p>
       </div>
@@ -40,7 +40,7 @@ function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center text-slate-800 dark:text-white transition-colors">
+      <div className="min-h-screen doodle-bg flex flex-col items-center justify-center text-slate-800 dark:text-white transition-colors">
         <Loader2 className="w-8 h-8 text-brand-600 animate-spin" />
       </div>
     );

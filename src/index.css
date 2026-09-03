@@ -2,17 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
 @layer base {
   * {
     box-sizing: border-box;
   }
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-[#0B0F19] dark:text-slate-100 min-h-screen transition-colors duration-200 antialiased selection:bg-brand-500 selection:text-white;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    @apply bg-white text-slate-800 dark:bg-[#0f172a] dark:text-slate-100 min-h-screen transition-colors duration-300 antialiased selection:bg-brand-500 selection:text-white;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
 }
 
-/* Custom modern scrollbars */
+/* ──────────── School Doodle Background Pattern ──────────── */
+.doodle-bg {
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cg opacity='0.06' fill='none' stroke='%234361ee' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3C!-- Pencil --%3E%3Cpath d='M80 80l20 60 8-3-20-60z M100 140l4-1 2 6-4 1z'/%3E%3C!-- Book --%3E%3Crect x='160' y='60' width='50' height='65' rx='3'/%3E%3Cline x1='185' y1='60' x2='185' y2='125'/%3E%3Cline x1='170' y1='78' x2='200' y2='78'/%3E%3Cline x1='170' y1='92' x2='200' y2='92'/%3E%3C!-- Star --%3E%3Cpath d='M310 85l8 16 18 3-13 12 3 18-16-8-16 8 3-18-13-12 18-3z'/%3E%3C!-- Ruler --%3E%3Crect x='420' y='50' width='20' height='90' rx='2'/%3E%3Cline x1='420' y1='70' x2='430' y2='70'/%3E%3Cline x1='420' y1='85' x2='428' y2='85'/%3E%3Cline x1='420' y1='100' x2='430' y2='100'/%3E%3Cline x1='420' y1='115' x2='428' y2='115'/%3E%3C!-- Calculator --%3E%3Crect x='520' y='60' width='45' height='60' rx='5'/%3E%3Crect x='526' y='66' width='33' height='14' rx='2'/%3E%3Ccircle cx='533' cy='90' r='3'/%3E%3Ccircle cx='543' cy='90' r='3'/%3E%3Ccircle cx='553' cy='90' r='3'/%3E%3Ccircle cx='533' cy='102' r='3'/%3E%3Ccircle cx='543' cy='102' r='3'/%3E%3Ccircle cx='553' cy='102' r='3'/%3E%3C!-- Palette --%3E%3Cellipse cx='75' cy='240' rx='35' ry='28'/%3E%3Ccircle cx='60' cy='232' r='5'/%3E%3Ccircle cx='75' cy='225' r='5'/%3E%3Ccircle cx='90' cy='232' r='5'/%3E%3Ccircle cx='70' cy='248' r='4'/%3E%3C!-- Globe --%3E%3Ccircle cx='210' cy='240' r='28'/%3E%3Cellipse cx='210' cy='240' rx='15' ry='28'/%3E%3Cline x1='182' y1='240' x2='238' y2='240'/%3E%3Cpath d='M188 225c15 5 30 5 44 0'/%3E%3Cpath d='M188 255c15-5 30-5 44 0'/%3E%3C!-- Backpack --%3E%3Crect x='310' y='210' width='45' height='55' rx='8'/%3E%3Cpath d='M318 210v-10a15 15 0 0130 0v10'/%3E%3Crect x='318' y='228' width='28' height='18' rx='3'/%3E%3C!-- Flask --%3E%3Cpath d='M440 220v25l-15 30h50l-15-30v-25'/%3E%3Cline x1='440' y1='220' x2='460' y2='220'/%3E%3Ccircle cx='445' cy='258' r='4'/%3E%3Ccircle cx='455' cy='262' r='3'/%3E%3C!-- Clock --%3E%3Ccircle cx='545' cy='240' r='25'/%3E%3Ccircle cx='545' cy='240' r='2'/%3E%3Cline x1='545' y1='240' x2='545' y2='222'/%3E%3Cline x1='545' y1='240' x2='558' y2='245'/%3E%3C!-- Lightbulb --%3E%3Cpath d='M75 390a20 20 0 1130 0c0 8-5 14-15 18s-15-10-15-18z'/%3E%3Cline x1='82' y1='408' x2='98' y2='408'/%3E%3Cline x1='84' y1='414' x2='96' y2='414'/%3E%3Cpath d='M83 380l-5-5 M97 380l5-5 M90 375v-8'/%3E%3C!-- Notebook --%3E%3Crect x='180' y='375' width='55' height='70' rx='4'/%3E%3Cline x1='195' y1='375' x2='195' y2='445'/%3E%3Cline x1='200' y1='390' x2='225' y2='390'/%3E%3Cline x1='200' y1='400' x2='225' y2='400'/%3E%3Cline x1='200' y1='410' x2='225' y2='410'/%3E%3Cline x1='200' y1='420' x2='220' y2='420'/%3E%3Ccircle cx='187' cy='385' r='3'/%3E%3Ccircle cx='187' cy='400' r='3'/%3E%3Ccircle cx='187' cy='415' r='3'/%3E%3Ccircle cx='187' cy='430' r='3'/%3E%3C!-- Triangle Ruler --%3E%3Cpath d='M310 440l40 0-20-45z'/%3E%3Cpath d='M320 440l15 0-7.5-20z'/%3E%3C!-- Scissors --%3E%3Ccircle cx='430' cy='400' r='8'/%3E%3Ccircle cx='450' cy='400' r='8'/%3E%3Cpath d='M435 394l10 35'/%3E%3Cpath d='M445 394l-10 35'/%3E%3C!-- Trophy --%3E%3Cpath d='M530 380h30v20c0 12-10 20-15 20s-15-8-15-20z'/%3E%3Cpath d='M530 385h-8c0 10 8 15 8 15'/%3E%3Cpath d='M560 385h8c0 10-8 15-8 15'/%3E%3Cline x1='545' y1='420' x2='545' y2='435'/%3E%3Cline x1='535' y1='435' x2='555' y2='435'/%3E%3C!-- Apple --%3E%3Cpath d='M75 510c-12 0-22 15-22 30s10 25 22 25 22-10 22-25-10-30-22-30z'/%3E%3Cpath d='M75 510c3-8 2-15 2-15'/%3E%3Cpath d='M77 500c5 0 8 5 8 5'/%3E%3C!-- Graduation Cap --%3E%3Cpath d='M190 520l25-12 25 12-25 12z'/%3E%3Cline x1='215' y1='532' x2='215' y2='555'/%3E%3Cpath d='M198 528v18c0 5 7 10 17 10s17-5 17-10v-18'/%3E%3C!-- Music Note --%3E%3Ccircle cx='320' cy='545' r='8'/%3E%3Cline x1='328' y1='545' x2='328' y2='510'/%3E%3Cpath d='M328 510c10-3 15 2 15 5s-5 5-15 2'/%3E%3C!-- Soccer Ball --%3E%3Ccircle cx='440' cy='535' r='22'/%3E%3Cpath d='M440 513l-6 15h12z'/%3E%3Cpath d='M440 557l-6-15h12z'/%3E%3C!-- ABC --%3E%3Ctext x='525' y='540' font-size='24' font-family='serif' fill='%234361ee' opacity='0.7'%3EAa%3C/text%3E%3C/g%3E%3C/svg%3E");
+  background-size: 600px 600px;
+  background-repeat: repeat;
+}
+
+.dark .doodle-bg {
+  background-color: #0f172a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cg opacity='0.05' fill='none' stroke='%2360a5fa' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M80 80l20 60 8-3-20-60z M100 140l4-1 2 6-4 1z'/%3E%3Crect x='160' y='60' width='50' height='65' rx='3'/%3E%3Cline x1='185' y1='60' x2='185' y2='125'/%3E%3Cline x1='170' y1='78' x2='200' y2='78'/%3E%3Cline x1='170' y1='92' x2='200' y2='92'/%3E%3Cpath d='M310 85l8 16 18 3-13 12 3 18-16-8-16 8 3-18-13-12 18-3z'/%3E%3Crect x='420' y='50' width='20' height='90' rx='2'/%3E%3Cline x1='420' y1='70' x2='430' y2='70'/%3E%3Cline x1='420' y1='85' x2='428' y2='85'/%3E%3Cline x1='420' y1='100' x2='430' y2='100'/%3E%3Cline x1='420' y1='115' x2='428' y2='115'/%3E%3Crect x='520' y='60' width='45' height='60' rx='5'/%3E%3Crect x='526' y='66' width='33' height='14' rx='2'/%3E%3Ccircle cx='533' cy='90' r='3'/%3E%3Ccircle cx='543' cy='90' r='3'/%3E%3Ccircle cx='553' cy='90' r='3'/%3E%3Ccircle cx='533' cy='102' r='3'/%3E%3Ccircle cx='543' cy='102' r='3'/%3E%3Ccircle cx='553' cy='102' r='3'/%3E%3Cellipse cx='75' cy='240' rx='35' ry='28'/%3E%3Ccircle cx='60' cy='232' r='5'/%3E%3Ccircle cx='75' cy='225' r='5'/%3E%3Ccircle cx='90' cy='232' r='5'/%3E%3Ccircle cx='70' cy='248' r='4'/%3E%3Ccircle cx='210' cy='240' r='28'/%3E%3Cellipse cx='210' cy='240' rx='15' ry='28'/%3E%3Cline x1='182' y1='240' x2='238' y2='240'/%3E%3Cpath d='M188 225c15 5 30 5 44 0'/%3E%3Cpath d='M188 255c15-5 30-5 44 0'/%3E%3Crect x='310' y='210' width='45' height='55' rx='8'/%3E%3Cpath d='M318 210v-10a15 15 0 0130 0v10'/%3E%3Crect x='318' y='228' width='28' height='18' rx='3'/%3E%3Cpath d='M440 220v25l-15 30h50l-15-30v-25'/%3E%3Cline x1='440' y1='220' x2='460' y2='220'/%3E%3Ccircle cx='445' cy='258' r='4'/%3E%3Ccircle cx='455' cy='262' r='3'/%3E%3Ccircle cx='545' cy='240' r='25'/%3E%3Ccircle cx='545' cy='240' r='2'/%3E%3Cline x1='545' y1='240' x2='545' y2='222'/%3E%3Cline x1='545' y1='240' x2='558' y2='245'/%3E%3Cpath d='M75 390a20 20 0 1130 0c0 8-5 14-15 18s-15-10-15-18z'/%3E%3Cline x1='82' y1='408' x2='98' y2='408'/%3E%3Cline x1='84' y1='414' x2='96' y2='414'/%3E%3Cpath d='M83 380l-5-5 M97 380l5-5 M90 375v-8'/%3E%3Crect x='180' y='375' width='55' height='70' rx='4'/%3E%3Cline x1='195' y1='375' x2='195' y2='445'/%3E%3Cline x1='200' y1='390' x2='225' y2='390'/%3E%3Cline x1='200' y1='400' x2='225' y2='400'/%3E%3Cline x1='200' y1='410' x2='225' y2='410'/%3E%3Cline x1='200' y1='420' x2='220' y2='420'/%3E%3Ccircle cx='187' cy='385' r='3'/%3E%3Ccircle cx='187' cy='400' r='3'/%3E%3Ccircle cx='187' cy='415' r='3'/%3E%3Ccircle cx='187' cy='430' r='3'/%3E%3Cpath d='M310 440l40 0-20-45z'/%3E%3Cpath d='M320 440l15 0-7.5-20z'/%3E%3Ccircle cx='430' cy='400' r='8'/%3E%3Ccircle cx='450' cy='400' r='8'/%3E%3Cpath d='M435 394l10 35'/%3E%3Cpath d='M445 394l-10 35'/%3E%3Cpath d='M530 380h30v20c0 12-10 20-15 20s-15-8-15-20z'/%3E%3Cpath d='M530 385h-8c0 10 8 15 8 15'/%3E%3Cpath d='M560 385h8c0 10-8 15-8 15'/%3E%3Cline x1='545' y1='420' x2='545' y2='435'/%3E%3Cline x1='535' y1='435' x2='555' y2='435'/%3E%3Cpath d='M75 510c-12 0-22 15-22 30s10 25 22 25 22-10 22-25-10-30-22-30z'/%3E%3Cpath d='M75 510c3-8 2-15 2-15'/%3E%3Cpath d='M77 500c5 0 8 5 8 5'/%3E%3Cpath d='M190 520l25-12 25 12-25 12z'/%3E%3Cline x1='215' y1='532' x2='215' y2='555'/%3E%3Cpath d='M198 528v18c0 5 7 10 17 10s17-5 17-10v-18'/%3E%3Ccircle cx='320' cy='545' r='8'/%3E%3Cline x1='328' y1='545' x2='328' y2='510'/%3E%3Cpath d='M328 510c10-3 15 2 15 5s-5 5-15 2'/%3E%3Ccircle cx='440' cy='535' r='22'/%3E%3Cpath d='M440 513l-6 15h12z'/%3E%3Cpath d='M440 557l-6-15h12z'/%3E%3Ctext x='525' y='540' font-size='24' font-family='serif' fill='%2360a5fa' opacity='0.7'%3EAa%3C/text%3E%3C/g%3E%3C/svg%3E");
+  background-size: 600px 600px;
+  background-repeat: repeat;
+}
+
+/* ──────────── Custom Scrollbars ──────────── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -21,48 +38,48 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
+  background: rgba(67, 97, 238, 0.2);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
+  background: rgba(67, 97, 238, 0.35);
 }
 
-/* Glassmorphism helpers */
+/* ──────────── Glass Helpers ──────────── */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 .dark .glass-panel {
-  background: rgba(17, 24, 39, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .glass-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.85));
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 .dark .glass-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.9));
+  background: rgba(30, 41, 59, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Custom LiveKit styles overrides */
+/* ──────────── LiveKit Overrides ──────────── */
 .lk-video-container {
-  border-radius: 1.25rem !important;
+  border-radius: 1rem !important;
   overflow: hidden !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.25) !important;
 }
 
 .lk-control-bar {
-  background: rgba(15, 23, 42, 0.9) !important;
+  background: rgba(15, 23, 42, 0.92) !important;
   backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 9999px !important;
-  padding: 0.6rem 1.75rem !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4) !important;
+  padding: 0.5rem 1.5rem !important;
+  box-shadow: 0 16px 20px -5px rgba(0, 0, 0, 0.35) !important;
 }

@@ -4,19 +4,28 @@ import { Sun, Moon } from 'lucide-react';
 
 export default function ThemeToggle({ className = '' }) {
   const { theme, toggleTheme } = useTheme();
+  const isDark = theme === 'dark';
 
   return (
     <button
       onClick={toggleTheme}
       type="button"
-      className={`p-2.5 rounded-2xl bg-slate-200/80 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-all ${className}`}
-      title={theme === 'dark' ? 'Switch to Light Mode (Day)' : 'Switch to Dark Mode (Night)'}
+      className={`relative flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all duration-300 ${
+        isDark 
+          ? 'bg-slate-800 border-slate-700 hover:bg-slate-700 text-amber-400' 
+          : 'bg-brand-50 border-brand-200 hover:bg-brand-100 text-brand-600'
+      } ${className}`}
+      title={isDark ? '☀️ Switch to Day Mode' : '🌙 Switch to Night Mode'}
     >
-      {theme === 'dark' ? (
-        <Sun className="w-4 h-4 text-amber-400" />
-      ) : (
-        <Moon className="w-4 h-4 text-slate-700" />
-      )}
+      <div className={`transition-all duration-300 ${isDark ? 'rotate-0 scale-100' : 'rotate-90 scale-0 w-0 overflow-hidden'}`}>
+        <Sun className="w-4 h-4" />
+      </div>
+      <div className={`transition-all duration-300 ${!isDark ? 'rotate-0 scale-100' : '-rotate-90 scale-0 w-0 overflow-hidden'}`}>
+        <Moon className="w-4 h-4" />
+      </div>
+      <span className="text-[10px] font-bold uppercase tracking-wider">
+        {isDark ? 'Night' : 'Day'}
+      </span>
     </button>
   );
 }

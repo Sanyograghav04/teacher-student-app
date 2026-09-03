@@ -263,7 +263,7 @@ export default function StudentFeesManager() {
     <div className="space-y-6">
       {/* Top Stat Progress Visualizer (Filoo App Media 3) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="glass-card p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-brand-100/60 dark:border-slate-800 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Total Target
@@ -280,7 +280,7 @@ export default function StudentFeesManager() {
           </div>
         </div>
 
-        <div className="glass-card p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-brand-100/60 dark:border-slate-800 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
               Collected Revenue
@@ -307,7 +307,7 @@ export default function StudentFeesManager() {
           </div>
         </div>
 
-        <div className="glass-card p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-brand-100/60 dark:border-slate-800 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-rose-600 dark:text-rose-400">
               Outstanding Dues
@@ -324,7 +324,7 @@ export default function StudentFeesManager() {
           </div>
         </div>
 
-        <div className="glass-card p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-brand-100/60 dark:border-slate-800 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Active Records
@@ -343,7 +343,7 @@ export default function StudentFeesManager() {
       </div>
 
       {/* Control Bar */}
-      <div className="glass-card p-4 sm:p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-brand-100/60 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         <div className="relative flex-1">
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
             <Search className="w-4 h-4" />
@@ -353,7 +353,7 @@ export default function StudentFeesManager() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by student name, phone, or class..."
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 bg-brand-50/50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all"
           />
         </div>
 
@@ -370,7 +370,7 @@ export default function StudentFeesManager() {
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
                 filterStatus === tab.id
                   ? 'bg-brand-600 text-white shadow-sm'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  : 'bg-brand-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               {tab.label}
@@ -381,7 +381,7 @@ export default function StudentFeesManager() {
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={exportCSV}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs border border-slate-200 dark:border-slate-700 transition-all"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-brand-50 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs border border-slate-200 dark:border-slate-700 transition-all"
             title="Export Records to CSV"
           >
             <Download className="w-3.5 h-3.5" />
@@ -394,7 +394,7 @@ export default function StudentFeesManager() {
               setEditingStudent(null);
               setShowAddModal(true);
             }}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-brand-500/25 transition-all"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-500/15 transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>Add Student</span>
@@ -409,7 +409,7 @@ export default function StudentFeesManager() {
           <p className="text-xs text-slate-500">Loading student records...</p>
         </div>
       ) : filteredStudents.length === 0 ? (
-        <div className="glass-card p-12 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 text-center">
+        <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 text-center">
           <Users className="w-10 h-10 text-slate-400 mx-auto mb-3" />
           <h4 className="text-base font-bold text-slate-900 dark:text-white">No Student Records Found</h4>
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1 mb-4">
@@ -439,12 +439,12 @@ export default function StudentFeesManager() {
             return (
               <div
                 key={student.id}
-                className="glass-card p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-brand-100/60 dark:border-slate-800 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                      <div className="w-10 h-10 rounded-2xl bg-brand-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
                         {student.student_name ? student.student_name[0].toUpperCase() : 'S'}
                       </div>
                       <div>
@@ -452,7 +452,7 @@ export default function StudentFeesManager() {
                           {student.student_name}
                         </h4>
                         {student.class_name && (
-                          <span className="inline-block text-[10px] font-semibold text-brand-600 dark:text-brand-400 bg-brand-500/10 dark:bg-brand-500/20 px-2 py-0.5 rounded-full mt-0.5">
+                          <span className="inline-block text-[10px] font-semibold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/15 px-2 py-0.5 rounded-full mt-0.5">
                             {student.class_name}
                           </span>
                         )}
@@ -495,7 +495,7 @@ export default function StudentFeesManager() {
                     )}
                   </div>
 
-                  <div className="bg-slate-100 dark:bg-slate-800/80 p-3 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 my-2">
+                  <div className="bg-brand-50 dark:bg-slate-800/80 p-3 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 my-2">
                     <div className="flex justify-between items-center text-xs mb-1.5">
                       <span className="text-slate-500 dark:text-slate-400 font-medium">Paid: <strong className="text-emerald-600 dark:text-emerald-400 font-bold">₹{paid.toLocaleString()}</strong></span>
                       <span className="text-slate-500 dark:text-slate-400 font-medium">Total: <strong className="text-slate-800 dark:text-slate-200 font-bold">₹{total.toLocaleString()}</strong></span>
@@ -553,7 +553,7 @@ export default function StudentFeesManager() {
       {/* Add / Edit Student Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="glass-card w-full max-w-lg p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-lg p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setShowAddModal(false)}
               className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
@@ -580,7 +580,7 @@ export default function StudentFeesManager() {
                     value={formData.student_name}
                     onChange={(e) => setFormData({ ...formData, student_name: e.target.value })}
                     placeholder="e.g. Cameron Williamson"
-                    className="w-full px-3.5 py-3 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-300/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3.5 py-3 bg-brand-50/50 dark:bg-slate-800/90 border border-brand-200/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
 
@@ -593,7 +593,7 @@ export default function StudentFeesManager() {
                     value={formData.class_name}
                     onChange={(e) => setFormData({ ...formData, class_name: e.target.value })}
                     placeholder="e.g. Class 10 - Math"
-                    className="w-full px-3.5 py-3 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-300/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3.5 py-3 bg-brand-50/50 dark:bg-slate-800/90 border border-brand-200/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
               </div>
@@ -608,7 +608,7 @@ export default function StudentFeesManager() {
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     placeholder="e.g. +91 9876543210"
-                    className="w-full px-3.5 py-3 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-300/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3.5 py-3 bg-brand-50/50 dark:bg-slate-800/90 border border-brand-200/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
 
@@ -621,7 +621,7 @@ export default function StudentFeesManager() {
                     value={formData.student_email}
                     onChange={(e) => setFormData({ ...formData, student_email: e.target.value })}
                     placeholder="student@gurukul.com"
-                    className="w-full px-3.5 py-3 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-300/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3.5 py-3 bg-brand-50/50 dark:bg-slate-800/90 border border-brand-200/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
               </div>
@@ -638,7 +638,7 @@ export default function StudentFeesManager() {
                     value={formData.total_fees}
                     onChange={(e) => setFormData({ ...formData, total_fees: e.target.value })}
                     placeholder="e.g. 5000"
-                    className="w-full px-3.5 py-3 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-300/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3.5 py-3 bg-brand-50/50 dark:bg-slate-800/90 border border-brand-200/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
 
@@ -652,7 +652,7 @@ export default function StudentFeesManager() {
                     value={formData.paid_fees}
                     onChange={(e) => setFormData({ ...formData, paid_fees: e.target.value })}
                     placeholder="e.g. 2000"
-                    className="w-full px-3.5 py-3 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3.5 py-3 bg-brand-50/50 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
               </div>
@@ -665,7 +665,7 @@ export default function StudentFeesManager() {
                   type="date"
                   value={formData.due_date}
                   onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
-                  className="w-full px-3.5 py-3 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-300/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3.5 py-3 bg-brand-50/50 dark:bg-slate-800/90 border border-brand-200/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
                 />
               </div>
 
@@ -678,7 +678,7 @@ export default function StudentFeesManager() {
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   placeholder="e.g. Monthly instalment, scholarship, etc."
-                  className="w-full px-3.5 py-2.5 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-300/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3.5 py-2.5 bg-brand-50/50 dark:bg-slate-800/90 border border-brand-200/80 dark:border-slate-700 rounded-2xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
                 />
               </div>
 
@@ -693,7 +693,7 @@ export default function StudentFeesManager() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-brand-500/25 transition-all"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-500/15 transition-all"
                 >
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Save Student</span>}
                 </button>
@@ -706,7 +706,7 @@ export default function StudentFeesManager() {
       {/* Record Payment Quick Modal */}
       {showPaymentModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="glass-card w-full max-w-sm p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl relative">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-sm p-6 sm:p-7 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl relative">
             <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-1">
               Record Fee Payment
             </h3>
@@ -729,7 +729,7 @@ export default function StudentFeesManager() {
                   value={paymentAmount}
                   onChange={(e) => setPaymentAmount(e.target.value)}
                   placeholder="e.g. 1000"
-                  className="w-full px-4 py-3 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-3 bg-brand-50/50 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
 
