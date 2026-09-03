@@ -4,9 +4,10 @@ import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import Navbar from '../components/Navbar';
 import StudentFeesManager from '../components/StudentFeesManager';
+import ClassNotesManager from '../components/ClassNotesManager';
 import { 
   Plus, Video, Trash2, Copy, Check, Play, RotateCcw, AlertCircle, Loader2, 
-  Sparkles, Users, Clock, X
+  Sparkles, Users, Clock, X, FileText
 } from 'lucide-react';
 
 export default function TeacherDashboard() {
@@ -107,6 +108,9 @@ export default function TeacherDashboard() {
               <Video className="w-4 h-4" /><span>Live Classrooms</span>
               <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-brand-400">{rooms.length}</span>
             </button>
+            <button onClick={() => setActiveTab('notes')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === 'notes' ? 'bg-white dark:bg-slate-900 text-brand-600 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'}`}>
+              <FileText className="w-4 h-4" /><span>Class Notes & Materials</span>
+            </button>
             <button onClick={() => setActiveTab('students')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === 'students' ? 'bg-white dark:bg-slate-900 text-brand-600 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'}`}>
               <Users className="w-4 h-4" /><span>Students & Fees</span>
             </button>
@@ -166,6 +170,7 @@ export default function TeacherDashboard() {
           </div>
         )}
 
+        {activeTab === 'notes' && <ClassNotesManager isTeacher={true} />}
         {activeTab === 'students' && <StudentFeesManager />}
       </main>
 

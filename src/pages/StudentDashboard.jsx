@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import Navbar from '../components/Navbar';
+import ClassNotesManager from '../components/ClassNotesManager';
 import { 
   KeyRound, Video, Play, RotateCcw, AlertCircle, Loader2, Radio, 
   ArrowRight, FileText, CreditCard, Copy, Check, Clock
@@ -10,6 +11,7 @@ import {
 
 export default function StudentDashboard() {
   const { user, profile } = useAuth();
+  const [activeTab, setActiveTab] = useState('lectures'); // 'lectures' or 'notes'
   const [activeRooms, setActiveRooms] = useState([]);
   const [roomCode, setRoomCode] = useState('');
   const [loading, setLoading] = useState(true);
@@ -95,65 +97,135 @@ export default function StudentDashboard() {
 
           <div className="lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4">
             {[
-              { icon: Video, title: 'Live Lectures', desc: 'HD video stream', color: 'brand' },
-              { icon: FileText, title: 'Class Notes', desc: 'PDFs & Assignments', color: 'amber' },
-              { icon: CreditCard, title: 'Fee Status', desc: 'Track paid receipts', color: 'emerald' },
+              { id: 'lectures', icon: Video, title: 'Live Lectures', desc: 'HD video stream', color: 'brand' },
+              { id: 'notes', icon: FileText, title: 'Class Notes', desc: 'PDFs & Assignments', color: 'amber' },
+              { id: 'fees', icon: CreditCard, title: 'Fee Status', desc: 'Track paid receipts', color: 'emerald' },
             ].map((item, i) => (
-              <div key={i} className={`bg-white dark:bg-slate-900 p-5 rounded-2xl border border-brand-100/60 dark:border-slate-800 shadow-soft hover:shadow-card transition-all flex flex-col justify-between group ${i === 2 ? 'col-span-2 sm:col-span-1' : ''}`}>
+              <button
+                key={i}
+                type="button"
+                onClick={() => {
+                  if (item.id === 'lectures' || item.id === 'notes') {
+                    setActiveTab(item.id);
+                  }
+                }}
+                className={`text-left bg-white dark:bg-slate-900 p-5 rounded-2xl border ${
+                  activeTab === item.id 
+                    ? 'border-brand-500 ring-2 ring-brand-500/20 dark:border-brand-500' 
+                    : 'border-brand-100/60 dark:border-slate-800'
+                } shadow-soft hover:shadow-card transition-all flex flex-col justify-between group cursor-pointer ${i === 2 ? 'col-span-2 sm:col-span-1' : ''}`}
+              >
                 <div className={`w-11 h-11 rounded-xl bg-${item.color}-50 dark:bg-${item.color}-500/15 text-${item.color}-600 dark:text-${item.color}-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                   <item.icon className="w-6 h-6" />
                 </div>
-                <div><h4 className="font-bold text-sm text-slate-800 dark:text-white">{item.title}</h4><p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{item.desc}</p></div>
-              </div>
+                <div>
+                  <h4 className="font-bold text-sm text-slate-800 dark:text-white flex items-center justify-between">
+                    <span>{item.title}</span>
+                    {activeTab === item.id && (
+                      <span className="w-2 h-2 rounded-full bg-brand-500" />
+                    )}
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{item.desc}</p>
+                </div>
+              </button>
             ))}
           </div>
         </div>
 
-        {/* Live Classrooms */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center"><Radio className="w-4 h-4 animate-pulse" /></div>
-              <h3 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">Active Live Classrooms 🎯</h3>
-            </div>
-            <button onClick={loadActiveRooms} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-700 shadow-sm">
-              <RotateCcw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /><span>Refresh</span>
+        {/* Tab Switcher */}
+        <div className="flex items-center justify-between border-b border-brand-100/50 dark:border-slate-800 pb-4">
+          <div className="flex items-center gap-1 p-1 rounded-xl bg-brand-50/80 dark:bg-slate-800/80 border border-brand-100/60 dark:border-slate-700">
+            <button 
+              onClick={() => setActiveTab('lectures')} 
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                activeTab === 'lectures' 
+                  ? 'bg-white dark:bg-slate-900 text-brand-600 shadow-sm' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'
+              }`}
+            >
+              <Video className="w-4 h-4" />
+              <span>Live Classrooms</span>
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-brand-400">
+                {activeRooms.length}
+              </span>
+            </button>
+            <button 
+              onClick={() => setActiveTab('notes')} 
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                activeTab === 'notes' 
+                  ? 'bg-white dark:bg-slate-900 text-brand-600 shadow-sm' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'
+              }`}
+            >
+              <FileText className="w-4 h-4" />
+              <span>Class Notes & Materials</span>
             </button>
           </div>
-          {loading ? (
-            <div className="py-16 text-center"><Loader2 className="w-8 h-8 text-brand-600 animate-spin mx-auto mb-3" /><p className="text-xs text-slate-500">Loading active rooms...</p></div>
-          ) : activeRooms.length === 0 ? (
-            <div className="bg-white dark:bg-slate-900 p-10 rounded-2xl border-2 border-dashed border-brand-200 dark:border-slate-800 text-center shadow-sm">
-              <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mx-auto mb-3"><Video className="w-7 h-7" /></div>
-              <h4 className="text-base font-bold text-slate-800 dark:text-white">No Live Classes Right Now 😴</h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1">Your teachers haven't started a room yet. Try joining with a room code above!</p>
+
+          {activeTab === 'lectures' && (
+            <button 
+              onClick={loadActiveRooms} 
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-700 shadow-sm"
+            >
+              <RotateCcw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
+          )}
+        </div>
+
+        {/* Live Classrooms View */}
+        {activeTab === 'lectures' && (
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center">
+                  <Radio className="w-4 h-4 animate-pulse" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">Active Live Classrooms 🎯</h3>
+              </div>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {activeRooms.map((room) => (
-                <div key={room.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-brand-100/60 dark:border-slate-800 shadow-soft hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between group">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-bold">
-                        <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />LIVE
-                      </span>
-                      <button onClick={() => copyToClipboard(room.room_code || room.code)} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-slate-800 hover:bg-brand-100 dark:hover:bg-slate-700 text-brand-600 dark:text-slate-300 text-xs font-mono font-medium transition-colors border border-brand-100 dark:border-slate-700">
-                        <span>{room.room_code || room.code}</span>{copiedCode === (room.room_code || room.code) ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-slate-400" />}
+            {loading ? (
+              <div className="py-16 text-center"><Loader2 className="w-8 h-8 text-brand-600 animate-spin mx-auto mb-3" /><p className="text-xs text-slate-500">Loading active rooms...</p></div>
+            ) : activeRooms.length === 0 ? (
+              <div className="bg-white dark:bg-slate-900 p-10 rounded-2xl border-2 border-dashed border-brand-200 dark:border-slate-800 text-center shadow-sm">
+                <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mx-auto mb-3"><Video className="w-7 h-7" /></div>
+                <h4 className="text-base font-bold text-slate-800 dark:text-white">No Live Classes Right Now 😴</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1">Your teachers haven't started a room yet. Try joining with a room code above or explore Class Notes!</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {activeRooms.map((room) => (
+                  <div key={room.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-brand-100/60 dark:border-slate-800 shadow-soft hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-bold">
+                          <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />LIVE
+                        </span>
+                        <button onClick={() => copyToClipboard(room.room_code || room.code)} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-slate-800 hover:bg-brand-100 dark:hover:bg-slate-700 text-brand-600 dark:text-slate-300 text-xs font-mono font-medium transition-colors border border-brand-100 dark:border-slate-700">
+                          <span>{room.room_code || room.code}</span>{copiedCode === (room.room_code || room.code) ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-slate-400" />}
+                        </button>
+                      </div>
+                      <h4 className="text-base font-extrabold text-slate-800 dark:text-white group-hover:text-brand-600 transition-colors">{room.title || 'Interactive Class'}</h4>
+                      <div className="mt-2 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"><Clock className="w-3.5 h-3.5" /><span>Started {new Date(room.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></div>
+                    </div>
+                    <div className="mt-5 pt-4 border-t border-brand-100/40 dark:border-slate-800">
+                      <button onClick={() => navigate(`/classroom/${room.id}`)} className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-500/15 transition-all">
+                        <Play className="w-3.5 h-3.5 fill-current" /><span>Join Live Classroom</span>
                       </button>
                     </div>
-                    <h4 className="text-base font-extrabold text-slate-800 dark:text-white group-hover:text-brand-600 transition-colors">{room.title || 'Interactive Class'}</h4>
-                    <div className="mt-2 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"><Clock className="w-3.5 h-3.5" /><span>Started {new Date(room.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></div>
                   </div>
-                  <div className="mt-5 pt-4 border-t border-brand-100/40 dark:border-slate-800">
-                    <button onClick={() => navigate(`/classroom/${room.id}`)} className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-500/15 transition-all">
-                      <Play className="w-3.5 h-3.5 fill-current" /><span>Join Live Classroom</span>
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Class Notes View */}
+        {activeTab === 'notes' && (
+          <section className="space-y-4">
+            <ClassNotesManager isTeacher={false} />
+          </section>
+        )}
       </main>
     </div>
   );
