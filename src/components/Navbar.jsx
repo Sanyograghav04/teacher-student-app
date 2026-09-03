@@ -68,7 +68,7 @@ export default function Navbar() {
                     {profile?.full_name || 'User'}
                   </p>
                   <div className="flex items-center gap-1">
-                    <span className={w-1.5 h-1.5 rounded-full } />
+                    <span className={`w-1.5 h-1.5 rounded-full ${isTeacher ? 'bg-amber-500' : 'bg-emerald-500'}`} />
                     <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
                       {isTeacher ? 'Teacher / Faculty' : 'Student'}
                     </span>
