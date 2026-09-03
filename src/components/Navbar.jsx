@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, User, BookOpen, GraduationCap, Settings } from 'lucide-react';
+import { LogOut, User, BookOpen, GraduationCap, Settings, Sparkles } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import AccountSettingsModal from './AccountSettingsModal';
 
@@ -29,11 +29,13 @@ export default function Navbar() {
             {isTeacher ? <GraduationCap className="w-5 h-5" /> : <BookOpen className="w-5 h-5" />}
           </div>
           <div>
-            <h1 className="font-extrabold text-lg text-brand-700 dark:text-white tracking-tight leading-tight">
-              Gurukul <span className="text-brand-500 font-bold text-sm">by Ruby</span>
+            <h1 className="font-extrabold text-lg text-brand-700 dark:text-white tracking-tight leading-tight flex items-center gap-1.5">
+              <span>Gurukul</span>
+              <span className="text-brand-500 font-bold text-sm">by Ruby</span>
+              <span className="text-xs">ðŸŒ¸</span>
             </h1>
             <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium -mt-0.5 tracking-wide">
-              Interactive Learning Platform ✨
+              Tuition & Live Mentorship âœ¨
             </p>
           </div>
         </div>
@@ -66,9 +68,9 @@ export default function Navbar() {
                     {profile?.full_name || 'User'}
                   </p>
                   <div className="flex items-center gap-1">
-                    <span className={`w-1.5 h-1.5 rounded-full ${isTeacher ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+                    <span className={w-1.5 h-1.5 rounded-full } />
                     <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">
-                      {profile?.role || 'student'}
+                      {isTeacher ? 'Teacher / Faculty' : 'Student'}
                     </span>
                   </div>
                 </div>

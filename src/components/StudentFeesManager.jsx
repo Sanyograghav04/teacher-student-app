@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase, syncFeesToCloud, fetchFeesFromCloud } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { 
-  Users, 
+  Users, MessageCircle, 
   Search, 
   Plus, 
   Download, 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, ArrowRight, AlertCircle, Loader2, Eye, EyeOff, BookOpen } from 'lucide-react';
+import { Mail, Lock, ArrowRight, AlertCircle, Loader2, Eye, EyeOff, BookOpen, Sparkles, Heart } from 'lucide-react';
 import ThemeToggle from '../components/ThemeToggle';
 
 export default function Login() {
@@ -35,37 +35,40 @@ export default function Login() {
         <ThemeToggle />
       </div>
 
-      {/* Soft blue glow behind card */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-brand-400/10 dark:bg-brand-600/10 blur-[120px] rounded-full pointer-events-none" />
+      {/* Soft ambient glow */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] bg-brand-400/10 dark:bg-brand-600/10 blur-[130px] rounded-full pointer-events-none" />
 
       {/* Header Container */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center z-10">
-        <div className="inline-flex w-16 h-16 rounded-2xl bg-brand-600 items-center justify-center text-white shadow-lg shadow-brand-500/25 mb-5 transform hover:scale-105 hover:rotate-3 transition-all duration-300">
+        <div className="inline-flex w-16 h-16 rounded-3xl bg-brand-600 items-center justify-center text-white shadow-lg shadow-brand-500/25 mb-4 transform hover:scale-105 transition-all duration-300">
           <BookOpen className="w-8 h-8" />
         </div>
-        <h2 className="text-3xl font-extrabold text-brand-700 dark:text-white tracking-tight">
-          Welcome Back! 📚
-        </h2>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 font-medium">
-          Sign in to your <span className="text-brand-600 font-semibold">Gurukul by Ruby</span> classroom
+        <div className="flex items-center justify-center gap-1 mb-1">
+          <h1 className="text-3xl font-extrabold text-brand-700 dark:text-white tracking-tight">
+            Gurukul <span className="text-brand-500 font-bold text-2xl">by Ruby</span>
+          </h1>
+          <span className="text-xl">ðŸŒ¸</span>
+        </div>
+        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+          Welcome back! Sign in to join your live classroom ðŸŽ’
         </p>
       </div>
 
       {/* Card Form */}
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10">
-        <div className="bg-white dark:bg-slate-900 border border-brand-100/80 dark:border-slate-800/80 py-8 px-6 sm:px-9 shadow-card rounded-2xl transition-all">
+      <div className="mt-7 sm:mx-auto sm:w-full sm:max-w-md z-10">
+        <div className="bg-white dark:bg-slate-900 border border-brand-100/80 dark:border-slate-800/80 py-8 px-6 sm:px-9 shadow-card rounded-3xl transition-all">
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-sm flex items-start gap-3">
+            <div className="mb-6 p-4 rounded-2xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs flex items-start gap-3">
               <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-              <span className="font-medium">{error}</span>
+              <span className="font-medium leading-relaxed">{error}</span>
             </div>
           )}
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Email Field */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-brand-700 dark:text-slate-300 mb-2">
-                Email Address
+              <label className="block text-xs font-semibold uppercase tracking-wider text-brand-700 dark:text-slate-300 mb-1.5">
+                Registered Email
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-400">
@@ -77,14 +80,14 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="student@gurukul.com"
-                  className="block w-full pl-11 pr-4 py-3.5 bg-brand-50/50 dark:bg-slate-800/80 border border-brand-200/80 dark:border-slate-700/80 rounded-xl text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition-all"
+                  className="block w-full pl-11 pr-4 py-3.5 bg-brand-50/50 dark:bg-slate-800/80 border border-brand-200/80 dark:border-slate-700/80 rounded-2xl text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition-all"
                 />
               </div>
             </div>
 
             {/* Password Field */}
             <div>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-xs font-semibold uppercase tracking-wider text-brand-700 dark:text-slate-300">
                   Password
                 </label>
@@ -104,8 +107,8 @@ export default function Login() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="block w-full pl-11 pr-11 py-3.5 bg-brand-50/50 dark:bg-slate-800/80 border border-brand-200/80 dark:border-slate-700/80 rounded-xl text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition-all"
+                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  className="block w-full pl-11 pr-11 py-3.5 bg-brand-50/50 dark:bg-slate-800/80 border border-brand-200/80 dark:border-slate-700/80 rounded-2xl text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition-all"
                 />
                 <button
                   type="button"
@@ -121,13 +124,13 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-4 px-4 rounded-xl text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-2xl text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md shadow-brand-500/25 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  <span>Sign In</span>
+                  <span>Sign In to Classroom ðŸš€</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -135,17 +138,23 @@ export default function Login() {
           </form>
 
           {/* Create Account Link */}
-          <div className="mt-7 pt-5 border-t border-brand-100/60 dark:border-slate-800 text-center">
+          <div className="mt-6 pt-5 border-t border-brand-100/60 dark:border-slate-800 text-center">
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              Don't have an account yet?{' '}
+              New to Gurukul by Ruby?{' '}
               <Link 
                 to="/register" 
                 className="font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 hover:underline transition-colors"
               >
-                Create Account ✍️
+                Create an Account âœï¸
               </Link>
             </p>
           </div>
+        </div>
+
+        {/* Reassurance Footer */}
+        <div className="mt-5 text-center text-xs text-slate-400 flex items-center justify-center gap-1.5">
+          <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
+          <span>Personal Mentorship & Tuition with Ruby Ma'am</span>
         </div>
       </div>
     </div>
