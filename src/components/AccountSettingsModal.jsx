@@ -406,15 +406,25 @@ export default function AccountSettingsModal({ isOpen, onClose }) {
                 </div>
               </div>
 
-              {/* Save Profile Button */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+              {/* Save Profile Button & Delete Account Link */}
+              <div className="flex items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
-                  onClick={onClose}
-                  className="px-4 py-2.5 rounded-xl text-slate-500 dark:text-slate-400 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  onClick={() => setActiveTab('danger')}
+                  className="inline-flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 font-semibold"
                 >
-                  Close
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete Account</span>
                 </button>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="px-4 py-2.5 rounded-xl text-slate-500 dark:text-slate-400 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    Close
+                  </button>
 
                 <button
                   type="submit"
