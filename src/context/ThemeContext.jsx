@@ -3,7 +3,6 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 const ThemeContext = createContext({});
 
 export function ThemeProvider({ children }) {
-  // Always lock into warm, human-crafted light theme
   const [theme] = useState('light');
 
   useEffect(() => {
@@ -13,7 +12,6 @@ export function ThemeProvider({ children }) {
   }, []);
 
   const toggleTheme = () => {
-    // Keep in human-made warm theme
     const root = document.documentElement;
     root.classList.remove('dark');
   };
