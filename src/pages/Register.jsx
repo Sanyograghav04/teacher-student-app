@@ -95,18 +95,30 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setRole('student')}
-                  className={p-4 rounded-2xl border-2 text-left transition-all relative flex flex-col justify-between }
+                  className={`p-4 rounded-2xl border-2 text-left transition-all relative flex flex-col justify-between ${
+                    role === 'student'
+                      ? 'border-brand-500 bg-brand-50/80 dark:bg-brand-500/15 shadow-sm'
+                      : 'border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/50 hover:border-brand-300'
+                  }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <div className={w-9 h-9 rounded-xl flex items-center justify-center }>
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                      role === 'student'
+                        ? 'bg-brand-600 text-white shadow-sm'
+                        : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300'
+                    }`}>
                       <GraduationCap className="w-5 h-5" />
                     </div>
-                    <div className={w-5 h-5 rounded-full flex items-center justify-center border-2 }>
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center border-2 ${
+                      role === 'student'
+                        ? 'bg-brand-600 border-brand-600 text-white'
+                        : 'border-slate-300 dark:border-slate-600 bg-transparent'
+                    }`}>
                       {role === 'student' && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-slate-800 dark:text-white">Student ðŸŽ’</h4>
+                    <h4 className="font-bold text-sm text-slate-800 dark:text-white">Student 🎒</h4>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Join live classes & learn</p>
                   </div>
                 </button>
@@ -114,18 +126,30 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setRole('teacher')}
-                  className={p-4 rounded-2xl border-2 text-left transition-all relative flex flex-col justify-between }
+                  className={`p-4 rounded-2xl border-2 text-left transition-all relative flex flex-col justify-between ${
+                    role === 'teacher'
+                      ? 'border-brand-500 bg-brand-50/80 dark:bg-brand-500/15 shadow-sm'
+                      : 'border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/50 hover:border-brand-300'
+                  }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <div className={w-9 h-9 rounded-xl flex items-center justify-center }>
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                      role === 'teacher'
+                        ? 'bg-brand-600 text-white shadow-sm'
+                        : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300'
+                    }`}>
                       <BookOpen className="w-5 h-5" />
                     </div>
-                    <div className={w-5 h-5 rounded-full flex items-center justify-center border-2 }>
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center border-2 ${
+                      role === 'teacher'
+                        ? 'bg-brand-600 border-brand-600 text-white'
+                        : 'border-slate-300 dark:border-slate-600 bg-transparent'
+                    }`}>
                       {role === 'teacher' && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-slate-800 dark:text-white">Teacher / Tutor ðŸ‘©â€ðŸ«</h4>
+                    <h4 className="font-bold text-sm text-slate-800 dark:text-white">Teacher / Tutor 👩‍🏫</h4>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Host batches & manage fees</p>
                   </div>
                 </button>

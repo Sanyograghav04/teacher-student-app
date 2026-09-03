@@ -313,9 +313,15 @@ export default function StudentDashboard() {
                       <div 
                         key={item.id}
                         onClick={() => toggleChecklist(item.id)}
-                        className={p-3 rounded-2xl border transition-all cursor-pointer flex items-center gap-3 }
+                        className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center gap-3 ${
+                          item.done 
+                            ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800 text-slate-500 line-through' 
+                            : 'bg-slate-50/80 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700 hover:border-brand-300 text-slate-800 dark:text-slate-200'
+                        }`}
                       >
-                        <div className={w-5 h-5 rounded-lg flex items-center justify-center border transition-colors }>
+                        <div className={`w-5 h-5 rounded-lg flex items-center justify-center border transition-colors ${
+                          item.done ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 dark:border-slate-600'
+                        }`}>
                           {item.done && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                         </div>
                         <span className="text-xs font-medium flex-1">
