@@ -39,7 +39,19 @@ export default function TeacherDashboard() {
     setCreating(true); setError('');
     const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     try {
-      const { data, error } = await supabase.from('rooms').insert([{ title: title.trim(), teacher_id: user.id, code: roomCode, is_active: true }]).select().single();
+      const { data, error } = await supabase
+        .from('rooms')
+        .insert([
+          { 
+            title: title.trim(), 
+            teacher_id: user.id, 
+            teacher_name: displayName,
+            room_code: roomCode, 
+            is_active: true 
+          }
+        ])
+        .select()
+        .single();
       if (error) throw error;
       setShowModal(false); setTitle(''); await loadRooms(); navigate(`/classroom/${data.id}`);
     } catch (err) { setError(err.message || 'Failed to create classroom.'); }
@@ -131,8 +143,8 @@ export default function TeacherDashboard() {
                           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />ONLINE
                         </span>
                         <div className="flex items-center gap-2">
-                          <button onClick={(e) => copyToClipboard(room.code, e)} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-slate-800 hover:bg-brand-100 dark:hover:bg-slate-700 text-brand-700 dark:text-slate-300 text-xs font-mono font-medium transition-colors border border-brand-100 dark:border-slate-700">
-                            <span>{room.code}</span>{copiedCode === room.code ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-slate-400" />}
+                          <button onClick={(e) => copyToClipboard(room.room_code || room.code, e)} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-slate-800 hover:bg-brand-100 dark:hover:bg-slate-700 text-brand-700 dark:text-slate-300 text-xs font-mono font-medium transition-colors border border-brand-100 dark:border-slate-700">
+                            <span>{room.room_code || room.code}</span>{copiedCode === (room.room_code || room.code) ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-slate-400" />}
                           </button>
                           <button onClick={(e) => handleDeleteRoom(room.id, e)} className="p-1.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
                         </div>

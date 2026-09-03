@@ -197,7 +197,7 @@ export default function Classroom() {
   }, [roomId, user, profile, isTeacher]);
 
   const handleCopyCode = () => {
-    const codeToCopy = roomData?.code || roomData?.room_code;
+    const codeToCopy = roomData?.room_code || roomData?.code;
     if (codeToCopy) {
       navigator.clipboard.writeText(codeToCopy);
       setCopied(true);
@@ -266,13 +266,13 @@ export default function Classroom() {
 
         {/* Header Right Actions */}
         <div className="flex items-center gap-2.5">
-          {(roomData?.code || roomData?.room_code) && (
+          {(roomData?.room_code || roomData?.code) && (
             <button
               onClick={handleCopyCode}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-mono font-medium text-slate-200 transition-colors"
               title="Click to copy room code"
             >
-              <span>{roomData?.code || roomData?.room_code}</span>
+              <span>{roomData?.room_code || roomData?.code}</span>
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
             </button>
           )}

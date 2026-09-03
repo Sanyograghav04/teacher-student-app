@@ -39,7 +39,7 @@ export default function StudentDashboard() {
     if (!code) return;
     setJoining(true); setError('');
     try {
-      const { data, error } = await supabase.from('rooms').select('*').eq('code', code).single();
+      const { data, error } = await supabase.from('rooms').select('*').eq('room_code', code).single();
       if (error || !data) throw new Error('Classroom code not found. Please check with your teacher.');
       if (!data.is_active) throw new Error('This classroom is not currently active.');
       navigate(`/classroom/${data.id}`);
@@ -137,8 +137,8 @@ export default function StudentDashboard() {
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-bold">
                         <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />LIVE
                       </span>
-                      <button onClick={() => copyToClipboard(room.code)} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-slate-800 hover:bg-brand-100 dark:hover:bg-slate-700 text-brand-600 dark:text-slate-300 text-xs font-mono font-medium transition-colors border border-brand-100 dark:border-slate-700">
-                        <span>{room.code}</span>{copiedCode === room.code ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-slate-400" />}
+                      <button onClick={() => copyToClipboard(room.room_code || room.code)} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-slate-800 hover:bg-brand-100 dark:hover:bg-slate-700 text-brand-600 dark:text-slate-300 text-xs font-mono font-medium transition-colors border border-brand-100 dark:border-slate-700">
+                        <span>{room.room_code || room.code}</span>{copiedCode === (room.room_code || room.code) ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-slate-400" />}
                       </button>
                     </div>
                     <h4 className="text-base font-extrabold text-slate-800 dark:text-white group-hover:text-brand-600 transition-colors">{room.title || 'Interactive Class'}</h4>
