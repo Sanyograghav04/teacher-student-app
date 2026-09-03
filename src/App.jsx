@@ -54,10 +54,14 @@ function ProtectedRoute({ children }) {
 }
 
 export default function App() {
+  const basename = (typeof window !== 'undefined' && window.location.pathname.startsWith('/teacher-student-app'))
+    ? '/teacher-student-app'
+    : '/';
+
   return (
     <ThemeProvider>
       <AuthProvider>
-        <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <BrowserRouter basename={basename}>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

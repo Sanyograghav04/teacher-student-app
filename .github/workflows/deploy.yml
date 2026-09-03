@@ -31,6 +31,14 @@ jobs:
       - name: Copy index.html to 404.html for SPA routing
         run: cp dist/index.html dist/404.html
 
+      - name: Create dual compatibility for Vercel and GitHub Pages
+        run: |
+          cp vercel.json dist/vercel.json
+          mkdir -p dist/teacher-student-app
+          cp -r dist/assets dist/teacher-student-app/
+          cp dist/manifest.json dist/teacher-student-app/ 2>/dev/null || true
+          cp dist/index.html dist/teacher-student-app/ 2>/dev/null || true
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
