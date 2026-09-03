@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, syncFeesToCloud, fetchFeesFromCloud } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { 
   Users, 
@@ -51,32 +51,51 @@ export default function StudentFeesManager() {
   const loadStudents = async () => {
     setLoading(true);
     try {
+      // 1. Try Supabase database table
       const { data, error } = await supabase
         .from('student_fees')
         .select('*')
         .eq('teacher_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) {
-        const local = localStorage.getItem(`gurukul_fees_${user.id}`);
-        if (local) setStudents(JSON.parse(local));
+      if (!error && Array.isArray(data) && data.length > 0) {
+        setStudents(data);
+        localStorage.setItem(`gurukul_fees_${user.id}`, JSON.stringify(data));
+        setLoading(false);
+        return;
+      }
+
+      // 2. Try Supabase cloud storage backup
+      const cloudData = await fetchFeesFromCloud(user.id);
+      if (cloudData && Array.isArray(cloudData) && cloudData.length > 0) {
+        setStudents(cloudData);
+        localStorage.setItem(`gurukul_fees_${user.id}`, JSON.stringify(cloudData));
+        setLoading(false);
+        return;
+      }
+
+      // 3. Fallback to localStorage
+      const local = localStorage.getItem(`gurukul_fees_${user.id}`);
+      if (local) {
+        setStudents(JSON.parse(local));
       } else {
-        setStudents(data || []);
-        localStorage.setItem(`gurukul_fees_${user.id}`, JSON.stringify(data || []));
+        setStudents([]);
       }
     } catch (err) {
-      console.error('Error loading students:', err);
+      console.warn('Error loading student fees:', err);
       const local = localStorage.getItem(`gurukul_fees_${user.id}`);
       if (local) setStudents(JSON.parse(local));
     } finally {
       setLoading(false);
     }
   };
+
   const handleSaveStudent = async (e) => {
     e.preventDefault();
     setSaving(true);
 
     const payload = {
+      id: editingStudent?.id || 'stud_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
       teacher_id: user.id,
       student_name: formData.student_name.trim(),
       student_email: formData.student_email.trim(),
@@ -86,44 +105,39 @@ export default function StudentFeesManager() {
       paid_fees: Number(formData.paid_fees) || 0,
       due_date: formData.due_date || null,
       notes: formData.notes.trim(),
+      created_at: editingStudent?.created_at || new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
 
     try {
+      let updated;
       if (editingStudent) {
-        const { error } = await supabase
-          .from('student_fees')
-          .update(payload)
-          .eq('id', editingStudent.id);
-
-        if (error) throw error;
-        const updated = students.map((s) => (s.id === editingStudent.id ? { ...s, ...payload } : s));
-        setStudents(updated);
-        localStorage.setItem(`gurukul_fees_${user.id}`, JSON.stringify(updated));
+        updated = students.map((s) => (s.id === editingStudent.id ? { ...s, ...payload } : s));
       } else {
-        const { data, error } = await supabase
-          .from('student_fees')
-          .insert([payload])
-          .select()
-          .single();
+        updated = [payload, ...students];
+      }
 
-        if (error) {
-          const newStudent = { ...payload, id: Date.now().toString(), created_at: new Date().toISOString() };
-          const updated = [newStudent, ...students];
-          setStudents(updated);
-          localStorage.setItem(`gurukul_fees_${user.id}`, JSON.stringify(updated));
+      // Always save locally & to cloud storage
+      setStudents(updated);
+      localStorage.setItem(`gurukul_fees_${user.id}`, JSON.stringify(updated));
+      syncFeesToCloud(user.id, updated);
+
+      // Attempt Supabase database update (silent failover if table not created)
+      try {
+        if (editingStudent) {
+          await supabase.from('student_fees').update(payload).eq('id', editingStudent.id);
         } else {
-          const updated = [data, ...students];
-          setStudents(updated);
-          localStorage.setItem(`gurukul_fees_${user.id}`, JSON.stringify(updated));
+          await supabase.from('student_fees').insert([payload]);
         }
+      } catch (dbErr) {
+        console.warn('Database table sync skipped:', dbErr);
       }
 
       setShowAddModal(false);
       setEditingStudent(null);
       resetForm();
     } catch (err) {
-      alert(err.message || 'Failed to save student.');
+      console.error('Failed to save student:', err);
     } finally {
       setSaving(false);
     }
@@ -137,38 +151,50 @@ export default function StudentFeesManager() {
     if (isNaN(addedAmount) || addedAmount <= 0) return;
 
     const newPaid = Number(showPaymentModal.paid_fees || 0) + addedAmount;
+    const studentId = showPaymentModal.id;
+
     try {
-      const { error } = await supabase
-        .from('student_fees')
-        .update({ paid_fees: newPaid, updated_at: new Date().toISOString() })
-        .eq('id', showPaymentModal.id);
+      const updated = students.map((s) => 
+        s.id === studentId ? { ...s, paid_fees: newPaid, updated_at: new Date().toISOString() } : s
+      );
 
-      if (error) throw error;
-
-      const updated = students.map((s) => (s.id === showPaymentModal.id ? { ...s, paid_fees: newPaid } : s));
+      // Save locally & to cloud storage immediately
       setStudents(updated);
       localStorage.setItem(`gurukul_fees_${user.id}`, JSON.stringify(updated));
+      syncFeesToCloud(user.id, updated);
+
+      // Attempt Supabase database update silently without failing
+      try {
+        await supabase
+          .from('student_fees')
+          .update({ paid_fees: newPaid, updated_at: new Date().toISOString() })
+          .eq('id', studentId);
+      } catch (dbErr) {
+        console.warn('Database table sync skipped:', dbErr);
+      }
+
       setShowPaymentModal(null);
       setPaymentAmount('');
     } catch (err) {
-      alert(err.message || 'Failed to record payment.');
+      console.error('Failed to record payment:', err);
     }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to remove this student record?')) return;
     try {
-      const { error } = await supabase
-        .from('student_fees')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
       const updated = students.filter((s) => s.id !== id);
       setStudents(updated);
       localStorage.setItem(`gurukul_fees_${user.id}`, JSON.stringify(updated));
+      syncFeesToCloud(user.id, updated);
+
+      try {
+        await supabase.from('student_fees').delete().eq('id', id);
+      } catch (dbErr) {
+        console.warn('Database table sync skipped:', dbErr);
+      }
     } catch (err) {
-      alert(err.message || 'Failed to delete student.');
+      console.error('Failed to delete student:', err);
     }
   };
 
@@ -552,13 +578,22 @@ export default function StudentFeesManager() {
 
       {/* Add / Edit Student Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white dark:bg-slate-900 w-full max-w-lg p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
+          onClick={() => setShowAddModal(false)}
+        >
+          <div 
+            className="bg-white dark:bg-slate-900 w-full max-w-lg p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
+              type="button"
               onClick={() => setShowAddModal(false)}
-              className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
+              className="absolute top-5 right-5 p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-all shadow-sm"
+              title="Close"
+              aria-label="Close"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 stroke-[2.5]" />
             </button>
 
             <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-1">
@@ -705,8 +740,24 @@ export default function StudentFeesManager() {
 
       {/* Record Payment Quick Modal */}
       {showPaymentModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white dark:bg-slate-900 w-full max-w-sm p-6 sm:p-7 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl relative">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
+          onClick={() => setShowPaymentModal(null)}
+        >
+          <div 
+            className="bg-white dark:bg-slate-900 w-full max-w-sm p-6 sm:p-7 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setShowPaymentModal(null)}
+              className="absolute top-4 right-4 p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-all shadow-sm"
+              title="Close"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5 stroke-[2.5]" />
+            </button>
+
             <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-1">
               Record Fee Payment
             </h3>

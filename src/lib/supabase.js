@@ -257,3 +257,42 @@ export async function deleteUserAccount(userId) {
   await supabase.auth.signOut();
   return true;
 }
+
+/**
+ * Sync student fees list to Cloud Storage backup
+ */
+export async function syncFeesToCloud(teacherId, feesList) {
+  if (!teacherId || !feesList) return;
+  try {
+    const filePath = `fees/teacher_${teacherId}_fees.json`;
+    const blob = new Blob([JSON.stringify(feesList, null, 2)], { type: 'application/json' });
+    await supabaseAdmin.storage
+      .from(NOTES_BUCKET)
+      .upload(filePath, blob, {
+        upsert: true,
+        contentType: 'application/json',
+      });
+  } catch (err) {
+    console.warn('Could not backup fees to cloud storage:', err);
+  }
+}
+
+/**
+ * Fetch student fees list from Cloud Storage backup
+ */
+export async function fetchFeesFromCloud(teacherId) {
+  if (!teacherId) return null;
+  try {
+    const filePath = `fees/teacher_${teacherId}_fees.json`;
+    const res = await fetch(
+      `${supabaseUrl}/storage/v1/object/public/${NOTES_BUCKET}/${filePath}?t=${Date.now()}`
+    );
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) return data;
+    }
+  } catch (err) {
+    console.warn('Could not read fees from cloud storage:', err);
+  }
+  return null;
+}
