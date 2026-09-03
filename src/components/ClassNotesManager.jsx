@@ -24,17 +24,6 @@ import {
   Filter
 } from 'lucide-react';
 
-const SUBJECT_LIST = [
-  'All',
-  'Physics',
-  'Chemistry',
-  'Mathematics',
-  'Biology',
-  'English',
-  'Computer Science',
-  'Social Science'
-];
-
 export default function ClassNotesManager({ isTeacher = false }) {
   const { user, profile } = useAuth();
   const [notes, setNotes] = useState([]);
@@ -45,10 +34,21 @@ export default function ClassNotesManager({ isTeacher = false }) {
   const [uploading, setUploading] = useState(false);
   const [uploadType, setUploadType] = useState('file'); // 'file' or 'link'
 
+  // Dynamically extract only subjects that teachers have actually assigned / added
+  const availableSubjects = React.useMemo(() => {
+    const subjectSet = new Set();
+    notes.forEach((n) => {
+      const s = n.subject?.trim();
+      if (s) subjectSet.add(s);
+    });
+    const sorted = Array.from(subjectSet).sort((a, b) => a.localeCompare(b));
+    return sorted.length > 0 ? ['All', ...sorted] : [];
+  }, [notes]);
+
   // Upload Form State
   const [formData, setFormData] = useState({
     title: '',
-    subject: 'Physics',
+    subject: '',
     description: '',
     externalLink: '',
   });
@@ -56,6 +56,12 @@ export default function ClassNotesManager({ isTeacher = false }) {
   const [formError, setFormError] = useState('');
 
   const displayName = profile?.full_name || user?.email?.split('@')[0] || (isTeacher ? 'Teacher' : 'Student');
+
+  useEffect(() => {
+    if (selectedSubject !== 'All' && !availableSubjects.some((s) => s.toLowerCase() === selectedSubject.toLowerCase())) {
+      setSelectedSubject('All');
+    }
+  }, [availableSubjects, selectedSubject]);
 
   useEffect(() => {
     loadNotes();
@@ -93,6 +99,11 @@ export default function ClassNotesManager({ isTeacher = false }) {
       return;
     }
 
+    if (!formData.subject.trim()) {
+      setFormError('Please enter a subject or category name.');
+      return;
+    }
+
     if (uploadType === 'file' && !selectedFile) {
       setFormError('Please select a file to upload.');
       return;
@@ -115,7 +126,7 @@ export default function ClassNotesManager({ isTeacher = false }) {
       const notePayload = {
         id: 'note_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
         title: formData.title.trim(),
-        subject: formData.subject,
+        subject: formData.subject.trim(),
         description: formData.description.trim(),
         upload_type: uploadType,
         file_name: fileData?.fileName || (uploadType === 'link' ? 'Resource Link' : 'Attachment'),
@@ -153,7 +164,7 @@ export default function ClassNotesManager({ isTeacher = false }) {
   const resetForm = () => {
     setFormData({
       title: '',
-      subject: 'Physics',
+      subject: '',
       description: '',
       externalLink: '',
     });
@@ -233,22 +244,24 @@ export default function ClassNotesManager({ isTeacher = false }) {
         </div>
       </div>
 
-      {/* Subject Filter Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-        {SUBJECT_LIST.map((subj) => (
-          <button
-            key={subj}
-            onClick={() => setSelectedSubject(subj)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
-              selectedSubject === subj
-                ? 'bg-brand-600 text-white shadow-sm'
-                : 'bg-white dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-brand-100/60 dark:border-slate-700'
-            }`}
-          >
-            {subj}
-          </button>
-        ))}
-      </div>
+      {/* Subject Filter Pills (Only shown for subjects actually added by teachers) */}
+      {availableSubjects.length > 0 && (
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+          {availableSubjects.map((subj) => (
+            <button
+              key={subj}
+              onClick={() => setSelectedSubject(subj)}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
+                selectedSubject.toLowerCase() === subj.toLowerCase()
+                  ? 'bg-brand-600 text-white shadow-sm'
+                  : 'bg-white dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-brand-100/60 dark:border-slate-700'
+              }`}
+            >
+              {subj}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Notes Grid */}
       {loading ? (
@@ -421,24 +434,40 @@ export default function ClassNotesManager({ isTeacher = false }) {
             <form onSubmit={handleUploadSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-brand-700 dark:text-slate-300 mb-1.5">
-                  Subject / Category *
+                  Subject / Batch Name *
                 </label>
-                <div className="flex flex-wrap gap-1.5 mb-2">
-                  {SUBJECT_LIST.filter((s) => s !== 'All').map((sub) => (
-                    <button
-                      key={sub}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, subject: sub })}
-                      className={`px-3 py-1 rounded-lg text-xs font-medium border transition-colors ${
-                        formData.subject === sub
-                          ? 'bg-brand-600 text-white border-brand-600'
-                          : 'bg-brand-50/50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-brand-100 dark:border-slate-700 hover:bg-brand-100'
-                      }`}
-                    >
-                      {sub}
-                    </button>
-                  ))}
-                </div>
+                <input
+                  type="text"
+                  required
+                  value={formData.subject}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  placeholder="e.g. Mathematics, Physics, English, Chemistry, Accounts..."
+                  className="w-full px-4 py-3 bg-brand-50/50 dark:bg-slate-800/90 border border-brand-200/80 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all mb-2"
+                />
+
+                {availableSubjects.filter((s) => s !== 'All').length > 0 && (
+                  <div>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1 font-medium">
+                      Or select previously added subject:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {availableSubjects.filter((s) => s !== 'All').map((sub) => (
+                        <button
+                          key={sub}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, subject: sub })}
+                          className={`px-3 py-1 rounded-lg text-xs font-medium border transition-colors ${
+                            formData.subject.toLowerCase() === sub.toLowerCase()
+                              ? 'bg-brand-600 text-white border-brand-600'
+                              : 'bg-brand-50/50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-brand-100 dark:border-slate-700 hover:bg-brand-100'
+                          }`}
+                        >
+                          {sub}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div>
