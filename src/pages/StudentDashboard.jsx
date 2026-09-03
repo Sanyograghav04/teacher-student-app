@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import Navbar from '../components/Navbar';
 import ClassNotesManager from '../components/ClassNotesManager';
+import StudentFeeViewer from '../components/StudentFeeViewer';
 import AccountSettingsModal from '../components/AccountSettingsModal';
 import { 
   KeyRound, Video, Play, RotateCcw, AlertCircle, Loader2, Radio, 
@@ -218,6 +219,104 @@ export default function StudentDashboard() {
           </div>
         </div>
 
+        {/* Interactive Quick Navigation Cards (Open Tabs) */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <button
+            type="button"
+            onClick={() => setActiveTab('classes')}
+            className={`p-5 rounded-3xl border text-left transition-all duration-200 flex flex-col justify-between group cursor-pointer ${
+              activeTab === 'classes'
+                ? 'bg-brand-600 text-white border-brand-600 shadow-md ring-2 ring-brand-400/40'
+                : 'bg-white dark:bg-slate-900 border-brand-100/80 dark:border-slate-800 hover:border-brand-300 shadow-soft'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className={`w-11 h-11 rounded-2xl flex items-center justify-center font-bold text-base transition-transform group-hover:scale-110 ${
+                activeTab === 'classes' ? 'bg-white/20 text-white' : 'bg-brand-50 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400'
+              }`}>
+                <Video className="w-5 h-5" />
+              </div>
+              {activeRooms.length > 0 && (
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                  activeTab === 'classes' ? 'bg-white/20 text-white' : 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
+                }`}>
+                  {activeRooms.length} Live
+                </span>
+              )}
+            </div>
+            <div>
+              <h4 className={`text-base font-extrabold ${activeTab === 'classes' ? 'text-white' : 'text-slate-800 dark:text-white'}`}>
+                Live Lectures
+              </h4>
+              <p className={`text-xs mt-0.5 ${activeTab === 'classes' ? 'text-brand-100' : 'text-slate-500 dark:text-slate-400'}`}>
+                Join live video classrooms
+              </p>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('notes')}
+            className={`p-5 rounded-3xl border text-left transition-all duration-200 flex flex-col justify-between group cursor-pointer ${
+              activeTab === 'notes'
+                ? 'bg-brand-600 text-white border-brand-600 shadow-md ring-2 ring-brand-400/40'
+                : 'bg-white dark:bg-slate-900 border-brand-100/80 dark:border-slate-800 hover:border-brand-300 shadow-soft'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className={`w-11 h-11 rounded-2xl flex items-center justify-center font-bold text-base transition-transform group-hover:scale-110 ${
+                activeTab === 'notes' ? 'bg-white/20 text-white' : 'bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400'
+              }`}>
+                <FileText className="w-5 h-5" />
+              </div>
+              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                activeTab === 'notes' ? 'bg-white/20 text-white' : 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300'
+              }`}>
+                Materials
+              </span>
+            </div>
+            <div>
+              <h4 className={`text-base font-extrabold ${activeTab === 'notes' ? 'text-white' : 'text-slate-800 dark:text-white'}`}>
+                Class Notes
+              </h4>
+              <p className={`text-xs mt-0.5 ${activeTab === 'notes' ? 'text-brand-100' : 'text-slate-500 dark:text-slate-400'}`}>
+                PDFs, summaries & assignments
+              </p>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('fees')}
+            className={`p-5 rounded-3xl border text-left transition-all duration-200 flex flex-col justify-between group cursor-pointer ${
+              activeTab === 'fees'
+                ? 'bg-brand-600 text-white border-brand-600 shadow-md ring-2 ring-brand-400/40'
+                : 'bg-white dark:bg-slate-900 border-brand-100/80 dark:border-slate-800 hover:border-brand-300 shadow-soft'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className={`w-11 h-11 rounded-2xl flex items-center justify-center font-bold text-base transition-transform group-hover:scale-110 ${
+                activeTab === 'fees' ? 'bg-white/20 text-white' : 'bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+              }`}>
+                <CreditCard className="w-5 h-5" />
+              </div>
+              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                activeTab === 'fees' ? 'bg-white/20 text-white' : 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300'
+              }`}>
+                Receipts
+              </span>
+            </div>
+            <div>
+              <h4 className={`text-base font-extrabold ${activeTab === 'fees' ? 'text-white' : 'text-slate-800 dark:text-white'}`}>
+                Fee Status
+              </h4>
+              <p className={`text-xs mt-0.5 ${activeTab === 'fees' ? 'text-brand-100' : 'text-slate-500 dark:text-slate-400'}`}>
+                Track paid dues & receipts
+              </p>
+            </div>
+          </button>
+        </div>
+
         {/* Tab Navigation */}
         <div className="flex items-center justify-between border-b border-brand-100/50 dark:border-slate-800 pb-3">
           <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-brand-50/80 dark:bg-slate-800/80 border border-brand-100/60 dark:border-slate-700">
@@ -248,6 +347,18 @@ export default function StudentDashboard() {
             >
               <FileText className="w-4 h-4" />
               <span>Class Notes & Downloads</span>
+            </button>
+
+            <button 
+              onClick={() => setActiveTab('fees')} 
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'fees' 
+                  ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'
+              }`}
+            >
+              <CreditCard className="w-4 h-4" />
+              <span>Fee Status & Receipts</span>
             </button>
           </div>
 
@@ -489,6 +600,11 @@ export default function StudentDashboard() {
         {/* Tab 2: Class Notes */}
         {activeTab === 'notes' && (
           <ClassNotesManager isTeacher={false} />
+        )}
+
+        {/* Tab 3: Student Fee Status & Receipts */}
+        {activeTab === 'fees' && (
+          <StudentFeeViewer />
         )}
       </main>
 
