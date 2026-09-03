@@ -58,7 +58,7 @@ function TeacherModerationDrawer({ isOpen, onClose, isTeacher }) {
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200/80 dark:border-slate-800/80 shadow-2xl flex flex-col transition-colors">
+    <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-80 max-w-[100vw] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200/80 dark:border-slate-800/80 shadow-2xl flex flex-col transition-colors">
       <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center">
@@ -236,29 +236,29 @@ export default function Classroom() {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-[#0B0F19] text-white overflow-hidden select-none">
+    <div className="h-screen h-[100dvh] w-screen flex flex-col bg-[#0B0F19] text-white overflow-hidden select-none">
       {/* Top Glass Header (Media 4 style) */}
-      <header className="h-16 border-b border-white/10 bg-slate-900/80 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between z-30 shrink-0">
-        <div className="flex items-center gap-3">
+      <header className="h-14 sm:h-16 border-b border-white/10 bg-slate-900/80 backdrop-blur-xl px-3 sm:px-6 flex items-center justify-between z-30 shrink-0 pt-[env(safe-area-inset-top,0px)]">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={() => navigate('/')}
-            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
+            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors shrink-0"
             title="Leave Classroom"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
 
-          <div>
+          <div className="overflow-hidden">
             <div className="flex items-center gap-2">
-              <h2 className="text-sm sm:text-base font-extrabold text-white tracking-tight truncate max-w-[200px] sm:max-w-xs">
+              <h2 className="text-xs sm:text-base font-extrabold text-white tracking-tight truncate max-w-[130px] xs:max-w-[200px] sm:max-w-xs">
                 {roomData?.title || 'Live Classroom'}
               </h2>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-400 text-[10px] font-extrabold tracking-wider">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-400 text-[9px] sm:text-[10px] font-extrabold tracking-wider shrink-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
                 LIVE
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 font-mono hidden sm:block">
+            <p className="text-[10px] sm:text-[11px] text-slate-400 font-mono hidden xs:block truncate">
               Room ID: {roomData?.id?.substring(0, 8)}...
             </p>
           </div>

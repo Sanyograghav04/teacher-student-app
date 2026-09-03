@@ -27,7 +27,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen doodle-bg flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden transition-colors">
-      <div className="absolute top-6 right-6 z-20"><ThemeToggle /></div>
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 pt-[env(safe-area-inset-top,0px)] pr-[env(safe-area-inset-right,0px)]"><ThemeToggle /></div>
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-400/8 dark:bg-brand-600/10 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center z-10">

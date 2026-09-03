@@ -192,21 +192,21 @@ export default function AccountSettingsModal({ isOpen, onClose }) {
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
       onClick={onClose}
     >
       <div 
-        className="bg-white dark:bg-slate-900 w-full max-w-xl rounded-2xl border border-brand-100/80 dark:border-slate-800 shadow-2xl relative max-h-[90vh] flex flex-col overflow-hidden"
+        className="bg-white dark:bg-slate-900 w-full max-w-xl rounded-2xl border border-brand-100/80 dark:border-slate-800 shadow-2xl relative max-h-[90dvh] flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Top Header with HIGH VISIBILITY Close Button */}
-        <div className="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-850/50">
+        <div className="p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-850/50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-brand-600 text-white flex items-center justify-center font-extrabold text-base shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-brand-600 text-white flex items-center justify-center font-extrabold text-base shadow-sm shrink-0">
               <User className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg sm:text-xl font-extrabold text-slate-800 dark:text-white">
+              <h3 className="text-base sm:text-xl font-extrabold text-slate-800 dark:text-white">
                 Account Centre & Profile
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -219,7 +219,7 @@ export default function AccountSettingsModal({ isOpen, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl bg-slate-200/80 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-all shadow-sm flex items-center justify-center"
+            className="p-2 rounded-xl bg-slate-200/80 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-all shadow-sm flex items-center justify-center shrink-0"
             title="Close Account Centre"
             aria-label="Close"
           >
@@ -228,7 +228,7 @@ export default function AccountSettingsModal({ isOpen, onClose }) {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 px-5 sm:px-6 pt-3 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="flex items-center gap-2 px-4 sm:px-6 pt-3 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-x-auto no-scrollbar shrink-0">
           {[
             { id: 'profile', label: 'My Profile & Avatar', icon: User },
             { id: 'security', label: 'Password', icon: KeyRound },
@@ -238,7 +238,7 @@ export default function AccountSettingsModal({ isOpen, onClose }) {
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 pb-3 pt-1 px-3 text-xs font-bold border-b-2 transition-all ${
+              className={`flex items-center gap-2 pb-3 pt-1 px-3 text-xs font-bold border-b-2 transition-all shrink-0 whitespace-nowrap ${
                 activeTab === tab.id
                   ? tab.id === 'danger'
                     ? 'border-rose-500 text-rose-600 dark:text-rose-400'
@@ -338,7 +338,7 @@ export default function AccountSettingsModal({ isOpen, onClose }) {
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                   Choose from Preset Avatars
                 </label>
-                <div className="grid grid-cols-6 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                   {PRESET_AVATARS.map((av) => (
                     <button
                       key={av.id}

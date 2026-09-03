@@ -58,7 +58,7 @@ export default function Login() {
   return (
     <div className="min-h-screen doodle-bg flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden transition-colors">
       {/* Top right Theme Toggle */}
-      <div className="absolute top-6 right-6 z-20">
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 pt-[env(safe-area-inset-top,0px)] pr-[env(safe-area-inset-right,0px)]">
         <ThemeToggle />
       </div>
 

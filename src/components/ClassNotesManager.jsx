@@ -224,7 +224,7 @@ export default function ClassNotesManager({ isTeacher = false }) {
           />
         </div>
 
-        <div className="flex items-center gap-2.5 shrink-0 justify-between sm:justify-end">
+        <div className="flex items-center gap-2.5 shrink-0 justify-between sm:justify-end flex-wrap sm:flex-nowrap w-full sm:w-auto">
           <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             {filteredNotes.length} {filteredNotes.length === 1 ? 'Material' : 'Materials'}
           </span>
@@ -235,7 +235,7 @@ export default function ClassNotesManager({ isTeacher = false }) {
                 resetForm();
                 setShowUploadModal(true);
               }}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all active:scale-95"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-500/20 transition-all active:scale-95 flex-1 sm:flex-initial"
             >
               <Plus className="w-4 h-4" />
               <span>Upload Notes / Material</span>
@@ -394,11 +394,11 @@ export default function ClassNotesManager({ isTeacher = false }) {
       {/* Upload Note Modal (Teachers only) */}
       {showUploadModal && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
           onClick={() => setShowUploadModal(false)}
         >
           <div 
-            className="bg-white dark:bg-slate-900 w-full max-w-lg p-6 sm:p-8 rounded-2xl border border-brand-100 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-slate-900 w-full max-w-lg p-5 sm:p-8 rounded-2xl border border-brand-100 dark:border-slate-800 shadow-2xl relative max-h-[90dvh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button

@@ -94,29 +94,29 @@ export default function ClassroomBlackboard({
               </div>
 
               <div>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight font-serif">
+                <h2 className="text-xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight font-serif">
                   {isTeacher ? (
                     <span>Namaste, {teacherName}! Ready to inspire?</span>
                   ) : (
                     <span>Welcome to Class, {userName}!</span>
                   )}
                 </h2>
-                <p className="text-sm sm:text-base text-emerald-100/90 mt-1 font-sans leading-relaxed">
+                <p className="text-xs sm:text-base text-emerald-100/90 mt-1 font-sans leading-relaxed">
                   "Every question is a step toward understanding. Ask fearlessly and learn with joy."
                 </p>
               </div>
 
               {/* Classroom Badges (Chalkboard style) */}
-              <div className="flex flex-wrap gap-2.5 pt-1">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#264e39] border border-emerald-500/30 text-xs font-medium text-emerald-200">
+              <div className="flex flex-wrap gap-2 sm:gap-2.5 pt-1">
+                <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-[#264e39] border border-emerald-500/30 text-[11px] sm:text-xs font-medium text-emerald-200">
                   <Lightbulb className="w-3.5 h-3.5 text-amber-300" />
                   <span>Concept Learning</span>
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#264e39] border border-emerald-500/30 text-xs font-medium text-emerald-200">
+                <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-[#264e39] border border-emerald-500/30 text-[11px] sm:text-xs font-medium text-emerald-200">
                   <BookOpen className="w-3.5 h-3.5 text-cyan-300" />
                   <span>Daily DPP & Notes</span>
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#264e39] border border-emerald-500/30 text-xs font-medium text-emerald-200">
+                <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-[#264e39] border border-emerald-500/30 text-[11px] sm:text-xs font-medium text-emerald-200">
                   <Heart className="w-3.5 h-3.5 text-rose-300 fill-rose-300" />
                   <span>Personal Attention</span>
                 </div>
@@ -126,7 +126,7 @@ export default function ClassroomBlackboard({
             {/* Right Column: Handcrafted Sticky Notes Pinned to the Board */}
             <div className="w-full lg:w-auto flex flex-col sm:flex-row lg:flex-col gap-3.5 shrink-0">
               {/* Yellow Sticky Note (Teacher Notice) */}
-              <div className="relative bg-[#fef3c7] text-[#78350f] p-4 rounded-xl shadow-lg border border-amber-300/80 transform rotate-1 hover:rotate-0 transition-transform duration-200 max-w-xs sm:w-64">
+              <div className="relative bg-[#fef3c7] text-[#78350f] p-3.5 sm:p-4 rounded-xl shadow-lg border border-amber-300/80 transform rotate-1 hover:rotate-0 transition-transform duration-200 w-full sm:w-64 max-w-full sm:max-w-xs">
                 {/* Red Pushpin */}
                 <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-rose-500 border-2 border-white shadow-sm"></div>
                 <div className="text-[11px] font-bold uppercase tracking-wider text-amber-800/80 mb-1 flex items-center justify-between">

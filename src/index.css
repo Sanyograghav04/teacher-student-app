@@ -3,13 +3,38 @@
 @tailwind utilities;
 
 
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+}
+
 @layer base {
   * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    touch-action: pan-x pan-y;
   }
   body {
     @apply bg-[#fbf9f5] text-slate-800 min-h-screen transition-colors duration-200 antialiased selection:bg-amber-400 selection:text-amber-950;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+  }
+  button, a, input, select, textarea {
+    touch-action: manipulation;
+  }
+  /* Prevent mobile browsers (especially iOS Safari) from auto-zooming on input focus */
+  @media screen and (max-width: 768px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
   }
 }
 
@@ -82,3 +107,22 @@
   padding: 0.5rem 1.5rem !important;
   box-shadow: 0 16px 20px -5px rgba(0, 0, 0, 0.35) !important;
 }
+
+@media (max-width: 640px) {
+  .lk-control-bar {
+    padding: 0.35rem 0.65rem !important;
+    gap: 0.35rem !important;
+    max-width: 95vw !important;
+    bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem)) !important;
+  }
+}
+
+/* ──────────── Utility Classes ──────────── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

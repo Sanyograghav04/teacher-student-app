@@ -160,7 +160,7 @@ export default function StudentDashboard() {
           <button
             type="button"
             onClick={() => setShowSettingsModal(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold border border-amber-200 transition-all shadow-sm"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold border border-amber-200 transition-all shadow-sm w-full sm:w-auto"
           >
             <Settings className="w-3.5 h-3.5" />
             <span>Edit Profile & Avatar</span>
@@ -300,17 +300,17 @@ export default function StudentDashboard() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center justify-between border-b border-brand-100/50 dark:border-slate-800 pb-3">
-          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-brand-50/80 dark:bg-slate-800/80 border border-brand-100/60 dark:border-slate-700">
+        <div className="flex items-center justify-between border-b border-brand-100/50 dark:border-slate-800 pb-3 gap-2">
+          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-brand-50/80 dark:bg-slate-800/80 border border-brand-100/60 dark:border-slate-700 overflow-x-auto no-scrollbar max-w-full">
             <button 
               onClick={() => setActiveTab('classes')} 
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 whitespace-nowrap ${
                 activeTab === 'classes' 
                   ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm' 
                   : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'
               }`}
             >
-              <Video className="w-4 h-4" />
+              <Video className="w-4 h-4 shrink-0" />
               <span>Live Classes & Join</span>
               {activeRooms.length > 0 && (
                 <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold">
@@ -321,25 +321,25 @@ export default function StudentDashboard() {
 
             <button 
               onClick={() => setActiveTab('notes')} 
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 whitespace-nowrap ${
                 activeTab === 'notes' 
                   ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm' 
                   : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'
               }`}
             >
-              <FileText className="w-4 h-4" />
+              <FileText className="w-4 h-4 shrink-0" />
               <span>Class Notes & Downloads</span>
             </button>
 
             <button 
               onClick={() => setActiveTab('fees')} 
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 whitespace-nowrap ${
                 activeTab === 'fees' 
                   ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm' 
                   : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'
               }`}
             >
-              <CreditCard className="w-4 h-4" />
+              <CreditCard className="w-4 h-4 shrink-0" />
               <span>Fee Status & Receipts</span>
             </button>
           </div>
@@ -347,7 +347,7 @@ export default function StudentDashboard() {
           {activeTab === 'classes' && (
             <button 
               onClick={loadActiveRooms} 
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-700 shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-700 shadow-sm shrink-0"
             >
               <RotateCcw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline">Refresh</span>
