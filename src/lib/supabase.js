@@ -64,6 +64,78 @@ export async function uploadNoteFile(file) {
 }
 
 /**
+ * Upload a user avatar image to Supabase Storage
+ */
+export async function uploadAvatar(userId, file) {
+  const ext = file.name.split('.').pop() || 'jpg';
+  const filePath = `avatars/${userId}_${Date.now()}.${ext}`;
+
+  const { error } = await supabaseAdmin.storage
+    .from(NOTES_BUCKET)
+    .upload(filePath, file, {
+      upsert: true,
+      contentType: file.type || 'image/jpeg',
+    });
+
+  if (error) throw error;
+
+  const { data: { publicUrl } } = supabase.storage
+    .from(NOTES_BUCKET)
+    .getPublicUrl(filePath);
+
+  return publicUrl;
+}
+
+/**
+ * Update user profile info across Auth and profiles database
+ */
+export async function updateUserProfile(userId, { fullName, avatarUrl }) {
+  // 1. Update Auth metadata
+  const authUpdates = { data: {} };
+  if (fullName !== undefined) authUpdates.data.full_name = fullName;
+  if (avatarUrl !== undefined) authUpdates.data.avatar_url = avatarUrl;
+
+  try {
+    await supabase.auth.updateUser(authUpdates);
+  } catch (err) {
+    console.warn('Could not update auth user metadata:', err);
+  }
+
+  // 2. Update profiles table
+  const profileUpdates = {};
+  if (fullName !== undefined) profileUpdates.full_name = fullName;
+  if (avatarUrl !== undefined) profileUpdates.avatar_url = avatarUrl;
+
+  const { error } = await supabase
+    .from('profiles')
+    .update(profileUpdates)
+    .eq('id', userId);
+
+  if (error) {
+    try {
+      await supabaseAdmin
+        .from('profiles')
+        .update(profileUpdates)
+        .eq('id', userId);
+    } catch (e) {
+      console.warn('Admin profile update error:', e);
+    }
+  }
+
+  // 3. Update rooms teacher_name if applicable
+  if (fullName) {
+    try {
+      await supabaseAdmin
+        .from('rooms')
+        .update({ teacher_name: fullName })
+        .eq('teacher_id', userId);
+    } catch (e) {}
+  }
+
+  return true;
+}
+
+/**
  * Fetch all published class notes & study materials
  */
 export async function fetchClassNotes() {

@@ -380,13 +380,22 @@ export default function ClassNotesManager({ isTeacher = false }) {
 
       {/* Upload Note Modal (Teachers only) */}
       {showUploadModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white dark:bg-slate-900 w-full max-w-lg p-6 sm:p-8 rounded-2xl border border-brand-100 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
+          onClick={() => setShowUploadModal(false)}
+        >
+          <div 
+            className="bg-white dark:bg-slate-900 w-full max-w-lg p-6 sm:p-8 rounded-2xl border border-brand-100 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
+              type="button"
               onClick={() => setShowUploadModal(false)}
-              className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
+              className="absolute top-5 right-5 p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-all shadow-sm"
+              title="Close"
+              aria-label="Close"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 stroke-[2.5]" />
             </button>
 
             <div className="flex items-center gap-3 mb-5">

@@ -176,9 +176,23 @@ export default function TeacherDashboard() {
 
       {/* Create Room Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 w-full max-w-md p-6 sm:p-8 rounded-2xl border border-brand-100 dark:border-slate-800 shadow-2xl relative">
-            <button onClick={() => setShowModal(false)} className="absolute top-5 right-5 p-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"><X className="w-5 h-5" /></button>
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn"
+          onClick={() => setShowModal(false)}
+        >
+          <div 
+            className="bg-white dark:bg-slate-900 w-full max-w-md p-6 sm:p-8 rounded-2xl border border-brand-100 dark:border-slate-800 shadow-2xl relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              type="button"
+              onClick={() => setShowModal(false)} 
+              className="absolute top-5 right-5 p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-all shadow-sm"
+              title="Close"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5 stroke-[2.5]" />
+            </button>
             <div className="flex items-center gap-3 mb-5">
               <div className="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center"><Video className="w-6 h-6" /></div>
               <div><h3 className="text-xl font-extrabold text-slate-800 dark:text-white">New Classroom 🎬</h3><p className="text-xs text-slate-500 dark:text-slate-400">Setup a live video session</p></div>
