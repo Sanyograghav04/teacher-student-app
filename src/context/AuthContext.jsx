@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, supabaseAdmin, generateAndSendVerificationEmail } from '../lib/supabase';
 
 const AuthContext = createContext({});
 
@@ -86,6 +86,9 @@ export function AuthProvider({ children }) {
       if (data?.user?.identities && data.user.identities.length === 0) {
         throw new Error('This email is already registered and verified! Please click "Sign In" below.');
       }
+
+      // Also trigger Resend email delivery in background
+      generateAndSendVerificationEmail(email, password, fullName).catch(() => {});
 
       return data;
     } catch (err) {
