@@ -273,7 +273,8 @@ export default function StudentDashboard() {
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-10 h-10 rounded-2xl bg-brand-50 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center shadow-inner">
                       <KeyRound className="w-5 h-5" />
-                                       <div>
+                    </div>
+                    <div>
                       <h3 className="font-bold text-slate-800 dark:text-white text-base">
                         Join Class by Code
                       </h3>
