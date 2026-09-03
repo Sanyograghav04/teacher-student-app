@@ -72,7 +72,7 @@ export default function TeacherDashboard() {
         .from('rooms')
         .insert([
           { 
-            title: ${title.trim()}, 
+            title: title.trim(), 
             teacher_id: user.id, 
             teacher_name: displayName,
             room_code: roomCode, 
