@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -20,9 +20,10 @@ import {
   MicOff, 
   UserX, 
   Users, 
-  Gem, 
+  Sparkles, 
   X,
-  Volume2
+  Volume2,
+  Radio
 } from 'lucide-react';
 
 function TeacherModerationDrawer({ isOpen, onClose, isTeacher }) {
@@ -57,27 +58,29 @@ function TeacherModerationDrawer({ isOpen, onClose, isTeacher }) {
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-80 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col transition-colors">
+    <div className="fixed inset-y-0 right-0 z-50 w-80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200/80 dark:border-slate-800/80 shadow-2xl flex flex-col transition-colors">
       <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Users className="w-5 h-5 text-rose-500" />
-          <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-            Class Participants ({participants.length})
+          <div className="w-8 h-8 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center">
+            <Users className="w-4 h-4" />
+          </div>
+          <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
+            Participants ({participants.length})
           </h3>
         </div>
         <button 
           onClick={onClose}
-          className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400"
+          className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
       {isTeacher && (
-        <div className="p-3 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 flex gap-2">
+        <div className="p-3 bg-slate-50 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-800">
           <button
             onClick={handleMuteAll}
-            className="flex-1 py-2 px-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors border border-red-500/20"
+            className="w-full py-2.5 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-rose-500/20"
           >
             <MicOff className="w-3.5 h-3.5" />
             <span>Mute All Students</span>
@@ -93,10 +96,10 @@ function TeacherModerationDrawer({ isOpen, onClose, isTeacher }) {
           return (
             <div 
               key={p.identity} 
-              className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between"
+              className="p-3 rounded-2xl bg-slate-100/80 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/60 flex items-center justify-between"
             >
               <div className="flex items-center gap-2.5 overflow-hidden">
-                <div className="w-8 h-8 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-xs shrink-0">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
                   {p.name ? p.name[0].toUpperCase() : p.identity[0].toUpperCase()}
                 </div>
                 <div className="overflow-hidden">
@@ -110,14 +113,14 @@ function TeacherModerationDrawer({ isOpen, onClose, isTeacher }) {
               </div>
 
               <div className="flex items-center gap-1 shrink-0">
-                <div className={`p-1.5 rounded-lg text-xs ${isAudioEnabled ? 'text-emerald-500 bg-emerald-500/10' : 'text-rose-500 bg-rose-500/10'}`}>
+                <div className={`p-1.5 rounded-lg text-xs ${isAudioEnabled ? 'text-emerald-500 bg-emerald-500/10' : 'text-slate-400 bg-slate-200 dark:bg-slate-700'}`}>
                   {isAudioEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <MicOff className="w-3.5 h-3.5" />}
                 </div>
 
                 {isTeacher && !isLocal && (
                   <button
                     onClick={() => handleKickParticipant(p.identity)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
                     title="Remove Student"
                   >
                     <UserX className="w-3.5 h-3.5" />
@@ -194,46 +197,38 @@ export default function Classroom() {
   }, [roomId, user, profile, isTeacher]);
 
   const handleCopyCode = () => {
-    if (roomData?.room_code) {
-      navigator.clipboard.writeText(roomData.room_code);
+    const codeToCopy = roomData?.code || roomData?.room_code;
+    if (codeToCopy) {
+      navigator.clipboard.writeText(codeToCopy);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
   };
 
-  const handleLeave = async () => {
-    if (isTeacher && roomData) {
-      try {
-        await supabase.from('rooms').update({ is_active: false }).eq('id', roomData.id);
-      } catch (_) {}
-    }
-    navigate('/');
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white">
-        <Loader2 className="w-10 h-10 text-rose-500 animate-spin mb-4" />
-        <h2 className="text-xl font-bold">Connecting to Live Classroom...</h2>
-        <p className="text-sm text-slate-400 mt-2">Setting up your HD WebRTC video connection</p>
+      <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center">
+        <Loader2 className="w-10 h-10 text-brand-500 animate-spin mb-4" />
+        <h3 className="text-lg font-bold">Connecting to Live Classroom...</h3>
+        <p className="text-xs text-slate-400 mt-1">Configuring audio & video streams</p>
       </div>
     );
   }
 
   if (error || !token) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-4">
+        <div className="max-w-md w-full glass-card border border-slate-800 p-8 rounded-3xl text-center">
+          <div className="w-14 h-14 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8" />
           </div>
-          <h2 className="text-xl font-bold text-white mb-2">Classroom Connection Error</h2>
-          <p className="text-sm text-slate-400 mb-6">{error || 'Unable to generate room token.'}</p>
+          <h3 className="text-xl font-bold mb-2">Classroom Connection Error</h3>
+          <p className="text-xs text-slate-400 mb-6">{error || 'Unable to obtain classroom access token.'}</p>
           <button
             onClick={() => navigate('/')}
-            className="w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm transition-colors"
+            className="w-full py-3 px-4 rounded-2xl bg-brand-600 hover:bg-brand-500 font-bold text-xs transition-colors"
           >
-            Back to Dashboard
+            Return to Dashboard
           </button>
         </div>
       </div>
@@ -241,75 +236,59 @@ export default function Classroom() {
   }
 
   return (
-    <div className="h-screen w-screen bg-slate-950 text-white flex flex-col overflow-hidden relative">
-      {/* Classroom Custom Top Bar */}
-      <header className="h-16 bg-slate-900/90 border-b border-slate-800 px-4 flex items-center justify-between shrink-0 z-20 backdrop-blur-md">
+    <div className="h-screen w-screen flex flex-col bg-[#0B0F19] text-white overflow-hidden select-none">
+      {/* Top Glass Header (Media 4 style) */}
+      <header className="h-16 border-b border-white/10 bg-slate-900/80 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between z-30 shrink-0">
         <div className="flex items-center gap-3">
           <button
-            onClick={handleLeave}
-            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-            title="Leave Class"
+            onClick={() => navigate('/')}
+            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
+            title="Leave Classroom"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4 h-4" />
           </button>
 
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-rose-600 to-amber-500 flex items-center justify-center text-white shadow-md">
-              <Gem className="w-4 h-4" />
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm sm:text-base font-extrabold text-white tracking-tight truncate max-w-[200px] sm:max-w-xs">
+                {roomData?.title || 'Live Classroom'}
+              </h2>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-400 text-[10px] font-extrabold tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+                LIVE
+              </span>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="font-bold text-sm text-white line-clamp-1 max-w-[200px] sm:max-w-md">
-                  {roomData?.title || 'Live Classroom'}
-                </h1>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 uppercase font-bold">
-                  Gurukul
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block">
-                Teacher: {roomData?.teacher_name || 'Instructor'}
-              </p>
-            </div>
+            <p className="text-[11px] text-slate-400 font-mono hidden sm:block">
+              Room ID: {roomData?.id?.substring(0, 8)}...
+            </p>
           </div>
         </div>
 
-        {/* Right Action Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Room Code Badge */}
-          {roomData?.room_code && (
+        {/* Header Right Actions */}
+        <div className="flex items-center gap-2.5">
+          {(roomData?.code || roomData?.room_code) && (
             <button
               onClick={handleCopyCode}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-mono font-bold transition-all"
-              title="Click to copy Room Code"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-mono font-medium text-slate-200 transition-colors"
+              title="Click to copy room code"
             >
-              <span className="text-slate-400 text-[10px] uppercase font-sans hidden sm:inline">Code:</span>
-              <span className="text-rose-400">{roomData.room_code}</span>
+              <span>{roomData?.code || roomData?.room_code}</span>
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
             </button>
           )}
 
-          {/* Participant Drawer Toggle */}
           <button
             onClick={() => setShowParticipantsDrawer(!showParticipantsDrawer)}
-            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors flex items-center gap-1.5 text-xs font-semibold"
-            title="Class Participants & Controls"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-600/30 border border-brand-500/40 hover:bg-brand-600/40 text-xs font-bold text-brand-300 transition-colors"
           >
-            <Users className="w-4 h-4 text-rose-400" />
-            <span className="hidden sm:inline">Manage</span>
-          </button>
-
-          {/* Leave Button */}
-          <button
-            onClick={handleLeave}
-            className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-semibold text-xs transition-colors shadow-lg shadow-red-600/20"
-          >
-            {isTeacher ? 'End Class' : 'Leave'}
+            <Users className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Roster</span>
           </button>
         </div>
       </header>
 
-      {/* LiveKit Official WebRTC Video Room */}
-      <div className="flex-1 w-full h-full relative overflow-hidden bg-slate-950">
+      {/* Main LiveKit Video Area */}
+      <div className="flex-1 relative overflow-hidden">
         <LiveKitRoom
           video={true}
           audio={true}
@@ -317,11 +296,11 @@ export default function Classroom() {
           serverUrl={LIVEKIT_URL}
           data-lk-theme="default"
           className="h-full w-full"
-          onDisconnected={handleLeave}
+          onDisconnected={() => navigate('/')}
         >
           <VideoConference />
           <RoomAudioRenderer />
-          <TeacherModerationDrawer 
+          <TeacherModerationDrawer
             isOpen={showParticipantsDrawer}
             onClose={() => setShowParticipantsDrawer(false)}
             isTeacher={isTeacher}
