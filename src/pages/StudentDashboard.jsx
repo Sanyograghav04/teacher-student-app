@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 import ClassNotesManager from '../components/ClassNotesManager';
 import StudentFeeViewer from '../components/StudentFeeViewer';
 import AccountSettingsModal from '../components/AccountSettingsModal';
+import ClassroomBlackboard from '../components/ClassroomBlackboard';
 import { 
   KeyRound, Video, Play, RotateCcw, AlertCircle, Loader2, Radio, 
   ArrowRight, FileText, CreditCard, Copy, Check, Clock, Sparkles,
@@ -118,71 +119,52 @@ export default function StudentDashboard() {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 space-y-7">
-        {/* Warm Student Hero Banner */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-600 via-brand-700 to-indigo-700 text-white p-6 sm:p-9 shadow-card">
-          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-          <div className="absolute bottom-0 right-1/4 -mb-12 w-48 h-48 bg-emerald-400/15 rounded-full blur-xl pointer-events-none" />
+        {/* Real Handcrafted Classroom Blackboard Banner */}
+        <ClassroomBlackboard
+          userName={displayName}
+          teacherName="Ruby Ma'am"
+          role="student"
+          activeClassCount={activeRooms.length}
+          onJoinClass={activeRooms.length > 0 ? () => navigate('/classroom/' + activeRooms[0].id) : null}
+        />
 
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div className="max-w-xl">
-              <div className="flex items-center gap-3 mb-3 flex-wrap">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-semibold text-brand-100">
-                  <Calendar className="w-3.5 h-3.5 text-amber-300" />
-                  <span>{todayFormatted}</span>
-                  <span className="text-white/40">|</span>
-                  <span>Gurukul by Ruby Learner</span>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setShowSettingsModal(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 text-brand-100 hover:text-white text-xs font-semibold backdrop-blur-md border border-white/20 transition-all cursor-pointer shadow-sm"
-                  title="Upload profile picture, change avatar, or manage account"
-                >
-                  <Settings className="w-3.5 h-3.5" />
-                  <span>Edit Profile & Avatar</span>
-                </button>
+        {/* Student Welcome & Profile Quick Bar */}
+        <div className="bg-white rounded-2xl border border-amber-100 p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div 
+              onClick={() => setShowSettingsModal(true)}
+              className="w-12 h-12 rounded-2xl bg-amber-500 hover:bg-amber-600 border-2 border-white flex items-center justify-center font-extrabold text-lg text-white shadow-sm overflow-hidden cursor-pointer transition-transform hover:scale-105 shrink-0"
+              title="Click to change profile picture or avatar"
+            >
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <span>{displayName ? displayName[0].toUpperCase() : 'S'}</span>
+              )}
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="font-extrabold text-slate-800 text-base">
+                  {greeting.text}, {displayName}!
+                </h3>
+                <span className="text-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">
+                  Student
+                </span>
               </div>
-              
-              <div className="flex items-center gap-3.5 mb-2">
-                <div 
-                  onClick={() => setShowSettingsModal(true)}
-                  className="w-12 h-12 rounded-2xl bg-white/20 hover:bg-white/30 border-2 border-white/30 backdrop-blur-md flex items-center justify-center font-extrabold text-lg text-white shadow-sm overflow-hidden cursor-pointer transition-transform hover:scale-105 shrink-0"
-                  title="Click to change profile picture or avatar"
-                >
-                  {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <span>{displayName ? displayName[0].toUpperCase() : 'S'}</span>
-                  )}
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight flex items-center flex-wrap gap-2">
-                  <span>{greeting.text}, {displayName}!</span>
-                  {greeting.icon}
-                </h2>
-              </div>
-              
-              <p className="mt-2 text-brand-100 text-sm sm:text-base font-normal leading-relaxed">
-                Welcome to your study hub. Enter your live classes, learn directly from Ruby Ma'am & faculty, and download your study notes.
+              <p className="text-xs text-slate-500 mt-0.5">
+                {todayFormatted} • Welcome to your tuition portal with Ruby Ma'am
               </p>
             </div>
-
-            {/* Quick Live Room Badge */}
-            <div className="flex items-center gap-3.5 bg-white/15 backdrop-blur-md p-4 rounded-2xl border border-white/20 shrink-0">
-              <span className="relative flex h-3.5 w-3.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
-              </span>
-              <div>
-                <div className="font-extrabold text-sm text-white flex items-center gap-1.5">
-                  <span>Interactive Live</span>
-                </div>
-                <div className="text-[11px] text-brand-200">
-                  {activeRooms.length} Active {activeRooms.length === 1 ? 'Class' : 'Classes'}
-                </div>
-              </div>
-            </div>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setShowSettingsModal(true)}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold border border-amber-200 transition-all shadow-sm"
+          >
+            <Settings className="w-3.5 h-3.5" />
+            <span>Edit Profile & Avatar</span>
+          </button>
         </div>
 
         {/* Message from Ruby Ma'am & Faculty (Notice Card) */}

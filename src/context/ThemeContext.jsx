@@ -3,26 +3,23 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 const ThemeContext = createContext({});
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('gurukul-theme') || 'light';
-  });
+  // Always lock into warm, human-crafted light theme
+  const [theme] = useState('light');
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('gurukul-theme', theme);
-  }, [theme]);
+    root.classList.remove('dark');
+    localStorage.setItem('gurukul-theme', 'light');
+  }, []);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    // Keep in human-made warm theme
+    const root = document.documentElement;
+    root.classList.remove('dark');
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme: 'light', toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -1,31 +1,19 @@
 import React from 'react';
-import { useTheme } from '../context/ThemeContext';
-import { Sun, Moon } from 'lucide-react';
+import { BookOpen, Sparkles } from 'lucide-react';
 
 export default function ThemeToggle({ className = '' }) {
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === 'dark';
-
   return (
-    <button
-      onClick={toggleTheme}
-      type="button"
-      className={`relative flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all duration-300 ${
-        isDark 
-          ? 'bg-slate-800 border-slate-700 hover:bg-slate-700 text-amber-400' 
-          : 'bg-brand-50 border-brand-200 hover:bg-brand-100 text-brand-600'
-      } ${className}`}
-      title={isDark ? 'Switch to Day Mode' : 'Switch to Night Mode'}
+    <div
+      className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50/80 border border-amber-200/80 text-amber-800 shadow-sm select-none ${className}`}
+      title="Gurukul by Ruby — Classroom Mode"
     >
-      <div className={`transition-all duration-300 ${isDark ? 'rotate-0 scale-100' : 'rotate-90 scale-0 w-0 overflow-hidden'}`}>
-        <Sun className="w-4 h-4" />
+      <div className="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs shadow-sm">
+        <BookOpen className="w-3 h-3" />
       </div>
-      <div className={`transition-all duration-300 ${!isDark ? 'rotate-0 scale-100' : '-rotate-90 scale-0 w-0 overflow-hidden'}`}>
-        <Moon className="w-4 h-4" />
-      </div>
-      <span className="text-[10px] font-bold uppercase tracking-wider">
-        {isDark ? 'Night' : 'Day'}
+      <span className="text-[11px] font-bold tracking-tight text-amber-900">
+        Classroom
       </span>
-    </button>
+      <Sparkles className="w-3 h-3 text-amber-500" />
+    </div>
   );
 }
