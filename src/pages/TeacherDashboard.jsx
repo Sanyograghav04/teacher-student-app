@@ -272,7 +272,11 @@ export default function TeacherDashboard() {
           <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-brand-50/80 dark:bg-slate-800/80 border border-brand-100/60 dark:border-slate-700">
             <button 
               onClick={() => setActiveTab('classes')} 
-              className={lex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all }
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'classes' 
+                  ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'
+              }`}
             >
               <Video className="w-4 h-4" />
               <span>Live Classrooms</span>
@@ -283,7 +287,11 @@ export default function TeacherDashboard() {
 
             <button 
               onClick={() => setActiveTab('notes')} 
-              className={lex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all }
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'notes' 
+                  ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'
+              }`}
             >
               <FileText className="w-4 h-4" />
               <span>Class Notes & Study Material</span>
@@ -291,7 +299,11 @@ export default function TeacherDashboard() {
 
             <button 
               onClick={() => setActiveTab('students')} 
-              className={lex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all }
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'students' 
+                  ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'
+              }`}
             >
               <Users className="w-4 h-4" />
               <span>Students & Fee Register ðŸ’°</span>

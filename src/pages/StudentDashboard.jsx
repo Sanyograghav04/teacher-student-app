@@ -185,7 +185,7 @@ export default function StudentDashboard() {
               className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-bold text-xs border border-emerald-200 dark:border-emerald-800 transition-colors shrink-0"
             >
               <MessageCircle className="w-4 h-4 text-emerald-600" />
-              <span>Ask a Doubt on WhatsApp ðŸ’¬</span>
+              <span>Ask a Doubt on WhatsApp 💬</span>
             </a>
           </div>
         </div>
@@ -195,7 +195,11 @@ export default function StudentDashboard() {
           <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-brand-50/80 dark:bg-slate-800/80 border border-brand-100/60 dark:border-slate-700">
             <button 
               onClick={() => setActiveTab('classes')} 
-              className={lex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all }
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'classes' 
+                  ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'
+              }`}
             >
               <Video className="w-4 h-4" />
               <span>Live Classes & Join</span>
@@ -208,10 +212,14 @@ export default function StudentDashboard() {
 
             <button 
               onClick={() => setActiveTab('notes')} 
-              className={lex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all }
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'notes' 
+                  ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-brand-600'
+              }`}
             >
               <FileText className="w-4 h-4" />
-              <span>Class Notes & Downloads ðŸ“š</span>
+              <span>Class Notes & Downloads 📚</span>
             </button>
           </div>
 
