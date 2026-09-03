@@ -53,40 +53,59 @@ export default function StudentFeesManager() {
   const loadStudents = async () => {
     setLoading(true);
     try {
-      // 1. Try Supabase database table
-      const { data, error } = await supabase
-        .from('student_fees')
-        .select('*')
-        .eq('teacher_id', user.id)
-        .order('created_at', { ascending: false });
+      let loaded = null;
 
-      if (!error && Array.isArray(data) && data.length > 0) {
-        setStudents(data);
-        localStorage.setItem(`gurukul_fees_${user.id}`, JSON.stringify(data));
-        setLoading(false);
-        return;
+      // 1. Try Supabase database table
+      try {
+        const { data, error } = await supabase
+          .from('student_fees')
+          .select('*')
+          .eq('teacher_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (!error && Array.isArray(data) && data.length > 0) {
+          loaded = data;
+        }
+      } catch (dbErr) {
+        // Table not present, proceed to cloud storage
       }
 
       // 2. Try Supabase cloud storage backup
-      const cloudData = await fetchFeesFromCloud(user.id);
-      if (cloudData && Array.isArray(cloudData) && cloudData.length > 0) {
-        setStudents(cloudData);
-        localStorage.setItem(`gurukul_fees_${user.id}`, JSON.stringify(cloudData));
-        setLoading(false);
-        return;
+      if (!loaded || loaded.length === 0) {
+        const cloudData = await fetchFeesFromCloud(user.id);
+        if (cloudData && Array.isArray(cloudData) && cloudData.length > 0) {
+          loaded = cloudData;
+        }
       }
 
       // 3. Fallback to localStorage
-      const local = localStorage.getItem(`gurukul_fees_${user.id}`);
-      if (local) {
-        setStudents(JSON.parse(local));
-      } else {
-        setStudents([]);
+      if (!loaded || loaded.length === 0) {
+        const local = localStorage.getItem(`gurukul_fees_${user.id}`);
+        if (local) {
+          try { loaded = JSON.parse(local); } catch (e) {}
+        }
       }
+
+      // Sanitize all records: total_fees must never be less than paid_fees
+      const sanitized = (loaded || []).map((s) => {
+        const p = Number(s.paid_fees || 0);
+        const t = Number(s.total_fees || 0);
+        return {
+          ...s,
+          total_fees: Math.max(t, p),
+          paid_fees: p,
+        };
+      });
+
+      setStudents(sanitized);
+      localStorage.setItem(`gurukul_fees_${user.id}`, JSON.stringify(sanitized));
+      syncFeesToCloud(user.id, sanitized);
     } catch (err) {
       console.warn('Error loading student fees:', err);
       const local = localStorage.getItem(`gurukul_fees_${user.id}`);
-      if (local) setStudents(JSON.parse(local));
+      if (local) {
+        try { setStudents(JSON.parse(local)); } catch (e) {}
+      }
     } finally {
       setLoading(false);
     }
@@ -96,6 +115,10 @@ export default function StudentFeesManager() {
     e.preventDefault();
     setSaving(true);
 
+    const totalInput = Number(formData.total_fees) || 0;
+    const paidInput = Number(formData.paid_fees) || 0;
+    const finalTotal = Math.max(totalInput, paidInput);
+
     const payload = {
       id: editingStudent?.id || 'stud_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
       teacher_id: user.id,
@@ -103,8 +126,8 @@ export default function StudentFeesManager() {
       student_email: formData.student_email.trim(),
       phone: formData.phone.trim(),
       class_name: formData.class_name.trim(),
-      total_fees: Number(formData.total_fees) || 0,
-      paid_fees: Number(formData.paid_fees) || 0,
+      total_fees: finalTotal,
+      paid_fees: paidInput,
       due_date: formData.due_date || null,
       notes: formData.notes.trim(),
       created_at: editingStudent?.created_at || new Date().toISOString(),
@@ -152,12 +175,14 @@ export default function StudentFeesManager() {
     const addedAmount = Number(paymentAmount);
     if (isNaN(addedAmount) || addedAmount <= 0) return;
 
+    const currentTotal = Number(showPaymentModal.total_fees || 0);
     const newPaid = Number(showPaymentModal.paid_fees || 0) + addedAmount;
+    const newTotal = Math.max(currentTotal, newPaid);
     const studentId = showPaymentModal.id;
 
     try {
       const updated = students.map((s) => 
-        s.id === studentId ? { ...s, paid_fees: newPaid, updated_at: new Date().toISOString() } : s
+        s.id === studentId ? { ...s, total_fees: newTotal, paid_fees: newPaid, updated_at: new Date().toISOString() } : s
       );
 
       // Save locally & to cloud storage immediately
@@ -169,7 +194,7 @@ export default function StudentFeesManager() {
       try {
         await supabase
           .from('student_fees')
-          .update({ paid_fees: newPaid, updated_at: new Date().toISOString() })
+          .update({ total_fees: newTotal, paid_fees: newPaid, updated_at: new Date().toISOString() })
           .eq('id', studentId);
       } catch (dbErr) {
         console.warn('Database table sync skipped:', dbErr);
@@ -259,14 +284,15 @@ export default function StudentFeesManager() {
     document.body.removeChild(link);
   };
 
-  const totalTarget = students.reduce((acc, curr) => acc + Number(curr.total_fees || 0), 0);
+  const totalTarget = students.reduce((acc, curr) => acc + Math.max(Number(curr.total_fees || 0), Number(curr.paid_fees || 0)), 0);
   const totalCollected = students.reduce((acc, curr) => acc + Number(curr.paid_fees || 0), 0);
   const totalPending = Math.max(0, totalTarget - totalCollected);
-  const collectionPercentage = totalTarget > 0 ? Math.round((totalCollected / totalTarget) * 100) : 0;
+  const collectionPercentage = totalTarget > 0 ? Math.min(100, Math.round((totalCollected / totalTarget) * 100)) : 0;
 
   const filteredStudents = students.filter((s) => {
-    const total = Number(s.total_fees || 0);
+    const rawTotal = Number(s.total_fees || 0);
     const paid = Number(s.paid_fees || 0);
+    const total = Math.max(rawTotal, paid);
     const isPaid = paid >= total && total > 0;
     const isPartial = paid > 0 && paid < total;
     const isPending = paid === 0;
@@ -457,12 +483,13 @@ export default function StudentFeesManager() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredStudents.map((student) => {
-            const total = Number(student.total_fees || 0);
+            const rawTotal = Number(student.total_fees || 0);
             const paid = Number(student.paid_fees || 0);
+            const total = Math.max(rawTotal, paid);
             const pending = Math.max(0, total - paid);
             const isPaid = paid >= total && total > 0;
             const isPartial = paid > 0 && paid < total;
-            const progress = total > 0 ? Math.round((paid / total) * 100) : 0;
+            const progress = total > 0 ? Math.min(100, Math.round((paid / total) * 100)) : 0;
 
             return (
               <div

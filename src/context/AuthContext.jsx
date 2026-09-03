@@ -79,7 +79,46 @@ export function AuthProvider({ children }) {
       },
     });
     if (error) throw error;
+
+    // In Supabase, if an email is already registered and verified,
+    // signUp returns empty identities: [] to protect privacy, and Supabase will NOT send any email.
+    if (data?.user?.identities && data.user.identities.length === 0) {
+      throw new Error('This email is already registered and verified! Please click "Sign In" below.');
+    }
+
     return data;
+  }
+
+  async function instantVerify(email) {
+    if (!email) throw new Error('Email address is required.');
+    try {
+      const { data, error } = await supabaseAdmin.auth.admin.listUsers();
+      if (error) throw error;
+      const targetUser = data.users.find(
+        (u) => u.email?.toLowerCase() === email.toLowerCase().trim()
+      );
+      if (!targetUser) {
+        throw new Error(`No account found for ${email}. Please create an account first.`);
+      }
+      const { error: updateErr } = await supabaseAdmin.auth.admin.updateUserById(targetUser.id, {
+        email_confirm: true,
+      });
+      if (updateErr) throw updateErr;
+
+      // Ensure profile exists
+      const fallbackProfile = {
+        id: targetUser.id,
+        email: targetUser.email || '',
+        full_name: targetUser.user_metadata?.full_name || 'User',
+        role: targetUser.user_metadata?.role || 'student',
+      };
+      await supabaseAdmin.from('profiles').upsert(fallbackProfile);
+
+      return true;
+    } catch (err) {
+      console.error('Instant verification error:', err);
+      throw err;
+    }
   }
 
   async function verifyOtp(email, token) {
@@ -122,6 +161,7 @@ export function AuthProvider({ children }) {
         loading,
         signIn,
         signUp,
+        instantVerify,
         verifyOtp,
         resendOtp,
         resetPassword,

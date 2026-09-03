@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { supabaseAdmin } from '../lib/supabase';
 import { Mail, RotateCw, CheckCircle2, AlertCircle, ExternalLink, BookOpen } from 'lucide-react';
 import ThemeToggle from '../components/ThemeToggle';
 
@@ -11,11 +12,23 @@ export default function VerifyEmail() {
   const [resendMessage, setResendMessage] = useState('');
   const [resendError, setResendError] = useState('');
   const [timer, setTimer] = useState(30);
-  const { user, resendOtp } = useAuth();
+  const [instantVerifying, setInstantVerifying] = useState(false);
+  const [alreadyConfirmed, setAlreadyConfirmed] = useState(false);
+  const { user, resendOtp, instantVerify } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => { if (user) navigate('/'); }, [user, navigate]);
   useEffect(() => { if (timer > 0) { const t = setTimeout(() => setTimer(timer - 1), 1000); return () => clearTimeout(t); } }, [timer]);
+
+  useEffect(() => {
+    if (!email) return;
+    supabaseAdmin.auth.admin.listUsers().then(({ data }) => {
+      const found = data?.users?.find((u) => u.email?.toLowerCase() === email.toLowerCase().trim());
+      if (found && found.email_confirmed_at) {
+        setAlreadyConfirmed(true);
+      }
+    }).catch(() => {});
+  }, [email]);
 
   const handleResend = async () => {
     if (timer > 0) return;
@@ -23,6 +36,25 @@ export default function VerifyEmail() {
     try { await resendOtp(email); setResendMessage('A new verification link has been sent!'); setTimer(60); }
     catch (err) { setResendError(err.message || 'Failed to resend verification email.'); }
     finally { setResending(false); }
+  };
+
+  const handleInstantVerify = async () => {
+    if (!email) {
+      setResendError('No email specified. Please go to Login or Register.');
+      return;
+    }
+    setInstantVerifying(true); setResendMessage(''); setResendError('');
+    try {
+      await instantVerify(email);
+      setResendMessage('Your email has been verified successfully! Redirecting to sign in...');
+      setTimeout(() => {
+        navigate('/login?verified=true&email=' + encodeURIComponent(email));
+      }, 1500);
+    } catch (err) {
+      setResendError(err.message || 'Could not auto-verify. Please check the email.');
+    } finally {
+      setInstantVerifying(false);
+    }
   };
 
   return (
@@ -44,18 +76,50 @@ export default function VerifyEmail() {
           </div>
           <h3 className="text-2xl font-extrabold text-slate-800 dark:text-white mb-2">Check Your Inbox</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">We sent a verification link to:<br /><span className="font-semibold text-brand-600 dark:text-brand-400 text-base">{email || 'your email'}</span></p>
-          <div className="text-xs text-slate-600 dark:text-slate-300 mb-6 bg-brand-50/50 dark:bg-slate-800/70 p-4 rounded-xl border border-brand-100/60 dark:border-slate-700/60 text-left space-y-1">
-            <p className="font-semibold text-brand-700 dark:text-white">Next steps:</p>
-            <p className="text-slate-500 dark:text-slate-400">1. Open the confirmation email from Gurukul.</p>
-            <p className="text-slate-500 dark:text-slate-400">2. Click <strong>"Confirm your email address"</strong>.</p>
+          
+          <div className="text-xs text-slate-600 dark:text-slate-300 mb-5 bg-brand-50/50 dark:bg-slate-800/70 p-4 rounded-xl border border-brand-100/60 dark:border-slate-700/60 text-left space-y-1.5">
+            <p className="font-semibold text-brand-700 dark:text-white">Didn't receive the email?</p>
+            <p className="text-slate-500 dark:text-slate-400">1. Check your <strong>Spam / Junk</strong> folder.</p>
+            <p className="text-slate-500 dark:text-slate-400">2. College/university domains (e.g. <em>@iilm.edu</em>) often block automated emails.</p>
+            <p className="text-slate-500 dark:text-slate-400">3. You can click <strong>"Instant Verify"</strong> below to activate your account immediately.</p>
           </div>
+
+          {alreadyConfirmed && (
+            <div className="mb-5 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs text-left space-y-2">
+              <div className="flex items-center gap-2 font-bold text-sm">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>This account is ALREADY verified!</span>
+              </div>
+              <p className="text-slate-600 dark:text-slate-400">
+                You already confirmed this email. Supabase will not send another verification email. You can sign in immediately.
+              </p>
+              <Link
+                to={`/login?email=${encodeURIComponent(email)}&verified=true`}
+                className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-all"
+              >
+                Sign In Now with this Email
+              </Link>
+            </div>
+          )}
+
           {resendMessage && (<div className="mb-4 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2"><CheckCircle2 className="w-4 h-4 shrink-0" /><span>{resendMessage}</span></div>)}
           {resendError && (<div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs flex items-center gap-2"><AlertCircle className="w-4 h-4 shrink-0" /><span>{resendError}</span></div>)}
-          <div className="space-y-3">
-            <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-500/25 transition-all">
+          
+          <div className="space-y-2.5">
+            <button 
+              onClick={handleInstantVerify} 
+              disabled={instantVerifying}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-600/25 transition-all disabled:opacity-50"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span>{instantVerifying ? 'Activating Account...' : 'Instant Verify & Sign In'}</span>
+            </button>
+
+            <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm shadow-sm transition-all">
               <span>Open Gmail</span><ExternalLink className="w-4 h-4" />
             </a>
-            <button onClick={handleResend} disabled={timer > 0 || resending} className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-brand-50 dark:bg-slate-800 hover:bg-brand-100 dark:hover:bg-slate-700 text-brand-700 dark:text-slate-300 font-semibold text-xs border border-brand-200 dark:border-slate-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+
+            <button onClick={handleResend} disabled={timer > 0 || resending} className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-brand-50 dark:bg-slate-800 hover:bg-brand-100 dark:hover:bg-slate-700 text-brand-700 dark:text-slate-300 font-semibold text-xs border border-brand-200 dark:border-slate-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
               <RotateCw className={`w-3.5 h-3.5 ${timer > 0 ? '' : 'animate-spin'}`} />
               <span>{timer > 0 ? `Resend Link in ${timer}s` : 'Resend Verification Link'}</span>
             </button>

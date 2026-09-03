@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, ArrowRight, AlertCircle, Loader2, Eye, EyeOff, BookOpen, Sparkles, Heart } from 'lucide-react';
+import { Mail, Lock, ArrowRight, AlertCircle, CheckCircle2, Loader2, Eye, EyeOff, BookOpen, Sparkles, Heart } from 'lucide-react';
 import ThemeToggle from '../components/ThemeToggle';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [searchParams] = useSearchParams();
+  const [email, setEmail] = useState(searchParams.get('email') || '');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(searchParams.get('verified') === 'true' ? 'Your email is verified! Please enter your password to sign in.' : '');
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const [verifying, setVerifying] = useState(false);
+  const { signIn, instantVerify } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const qEmail = searchParams.get('email');
+    if (qEmail) setEmail(qEmail);
+  }, [searchParams]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,6 +35,25 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  const handleInstantVerify = async () => {
+    if (!email.trim()) {
+      setError('Please enter your email address first.');
+      return;
+    }
+    setVerifying(true);
+    setError('');
+    try {
+      await instantVerify(email.trim());
+      setSuccess('Account verified successfully! Now click "Sign In".');
+    } catch (err) {
+      setError(err.message || 'Failed to verify account.');
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const isEmailUnconfirmed = error.toLowerCase().includes('email not confirmed');
 
   return (
     <div className="min-h-screen doodle-bg flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden transition-colors">
@@ -57,10 +84,30 @@ export default function Login() {
       {/* Card Form */}
       <div className="mt-7 sm:mx-auto sm:w-full sm:max-w-md z-10">
         <div className="bg-white dark:bg-slate-900 border border-brand-100/80 dark:border-slate-800/80 py-8 px-6 sm:px-9 shadow-card rounded-3xl transition-all">
+          {success && (
+            <div className="mb-6 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
+              <span className="font-medium leading-relaxed">{success}</span>
+            </div>
+          )}
+
           {error && (
-            <div className="mb-6 p-4 rounded-2xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-              <span className="font-medium leading-relaxed">{error}</span>
+            <div className="mb-6 p-4 rounded-2xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs space-y-2">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                <span className="font-medium leading-relaxed">{error}</span>
+              </div>
+              {isEmailUnconfirmed && (
+                <button
+                  type="button"
+                  onClick={handleInstantVerify}
+                  disabled={verifying}
+                  className="w-full mt-2 py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-2"
+                >
+                  {verifying ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                  <span>Click here to activate & verify your email instantly</span>
+                </button>
+              )}
             </div>
           )}
 

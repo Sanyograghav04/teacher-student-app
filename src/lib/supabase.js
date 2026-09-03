@@ -289,13 +289,49 @@ export async function syncFeesToCloud(teacherId, feesList) {
         upsert: true,
         contentType: 'application/json',
       });
+
+    // Also maintain a combined all_student_fees.json so students can view their fee records across teachers
+    try {
+      const currentGlobal = await fetchAllStudentFeesFromCloud();
+      const otherTeachers = Array.isArray(currentGlobal)
+        ? currentGlobal.filter((s) => s.teacher_id !== teacherId)
+        : [];
+      const combined = [...feesList, ...otherTeachers];
+      const globalBlob = new Blob([JSON.stringify(combined, null, 2)], { type: 'application/json' });
+      await supabaseAdmin.storage
+        .from(NOTES_BUCKET)
+        .upload('fees/all_student_fees.json', globalBlob, {
+          upsert: true,
+          contentType: 'application/json',
+        });
+    } catch (globalErr) {
+      console.warn('Could not update all_student_fees.json:', globalErr);
+    }
   } catch (err) {
     console.warn('Could not backup fees to cloud storage:', err);
   }
 }
 
 /**
- * Fetch student fees list from Cloud Storage backup
+ * Fetch all student fees across all teachers from Cloud Storage
+ */
+export async function fetchAllStudentFeesFromCloud() {
+  try {
+    const res = await fetch(
+      `${supabaseUrl}/storage/v1/object/public/${NOTES_BUCKET}/fees/all_student_fees.json?t=${Date.now()}`
+    );
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) return data;
+    }
+  } catch (err) {
+    console.warn('Could not read all fees from cloud storage:', err);
+  }
+  return [];
+}
+
+/**
+ * Fetch student fees list from Cloud Storage backup for a specific teacher
  */
 export async function fetchFeesFromCloud(teacherId) {
   if (!teacherId) return null;

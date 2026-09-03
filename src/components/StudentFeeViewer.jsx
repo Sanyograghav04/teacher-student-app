@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../lib/supabase';
+import { supabase, fetchAllStudentFeesFromCloud } from '../lib/supabase';
 import { 
   CreditCard, CheckCircle2, Clock, AlertCircle, 
   RotateCcw, Loader2, MessageCircle, Calendar, FileText
@@ -23,40 +23,43 @@ export default function StudentFeeViewer() {
   const loadFeeRecord = async () => {
     setLoading(true);
     try {
-      // 1. Check database for match by student_email or student_name
       let found = null;
-      if (studentEmail) {
-        const { data } = await supabase
-          .from('student_fees')
-          .select('*')
-          .ilike('student_email', studentEmail.trim())
-          .order('created_at', { ascending: false });
-        if (data && data.length > 0) {
-          found = data[0];
+
+      // 1. Check database for match by student_email or student_name
+      try {
+        if (studentEmail) {
+          const { data } = await supabase
+            .from('student_fees')
+            .select('*')
+            .ilike('student_email', studentEmail.trim())
+            .order('created_at', { ascending: false });
+          if (data && data.length > 0) {
+            found = data[0];
+          }
         }
+
+        if (!found && studentName) {
+          const { data } = await supabase
+            .from('student_fees')
+            .select('*')
+            .ilike('student_name', studentName.trim())
+            .order('created_at', { ascending: false });
+          if (data && data.length > 0) {
+            found = data[0];
+          }
+        }
+      } catch (dbErr) {
+        // Database table may not exist yet, fallback to cloud storage
       }
 
-      if (!found && studentName) {
-        const { data } = await supabase
-          .from('student_fees')
-          .select('*')
-          .ilike('student_name', studentName.trim())
-          .order('created_at', { ascending: false });
-        if (data && data.length > 0) {
-          found = data[0];
-        }
-      }
-
-      // 2. Check all student_fees if no direct match yet
+      // 2. Fallback to Cloud Storage global fees ledger (all_student_fees.json)
       if (!found) {
-        const { data } = await supabase
-          .from('student_fees')
-          .select('*')
-          .order('created_at', { ascending: false });
-        if (data && data.length > 0) {
-          const match = data.find(s => 
-            (s.student_email && s.student_email.toLowerCase() === studentEmail.toLowerCase()) ||
-            (s.student_name && s.student_name.toLowerCase().includes(studentName.toLowerCase()))
+        const cloudFees = await fetchAllStudentFeesFromCloud();
+        if (Array.isArray(cloudFees) && cloudFees.length > 0) {
+          const match = cloudFees.find(s => 
+            (s.student_email && s.student_email.toLowerCase().trim() === studentEmail.toLowerCase().trim()) ||
+            (s.student_name && s.student_name.toLowerCase().trim() === studentName.toLowerCase().trim()) ||
+            (s.student_name && studentName.toLowerCase().includes(s.student_name.toLowerCase()))
           );
           if (match) found = match;
         }
@@ -70,8 +73,9 @@ export default function StudentFeeViewer() {
     }
   };
 
-  const total = feeRecord ? Number(feeRecord.total_fees) || 0 : 0;
+  const rawTotal = feeRecord ? Number(feeRecord.total_fees) || 0 : 0;
   const paid = feeRecord ? Number(feeRecord.paid_fees) || 0 : 0;
+  const total = Math.max(rawTotal, paid);
   const pending = Math.max(0, total - paid);
   const progress = total > 0 ? Math.min(100, Math.round((paid / total) * 100)) : 0;
   const isPaid = total > 0 && pending === 0;
