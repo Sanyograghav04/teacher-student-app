@@ -82,7 +82,7 @@ export default function TeacherDashboard() {
         .select()
         .single();
       if (error) throw error;
-      setShowModal(false); setTitle(''); await loadRooms(); navigate(/classroom/);
+      setShowModal(false); setTitle(''); await loadRooms(); navigate('/classroom/' + data.id);
     } catch (err) { 
       setError(err.message || 'Failed to create classroom.'); 
     }
@@ -417,7 +417,7 @@ export default function TeacherDashboard() {
                       {/* Launch Actions */}
                       <div className="mt-6 pt-4 border-t border-brand-100/50 dark:border-slate-800 flex gap-2">
                         <button 
-                          onClick={() => navigate(/classroom/)} 
+                          onClick={() => navigate('/classroom/' + room.id)} 
                           className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-500/20 transition-all"
                         >
                           <Play className="w-3.5 h-3.5 fill-current" />

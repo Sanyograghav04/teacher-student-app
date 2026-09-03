@@ -74,7 +74,7 @@ export default function StudentDashboard() {
         .single();
       if (error || !data) throw new Error('Classroom code not found. Please double check with Ruby Ma\'am or your teacher.');
       if (!data.is_active) throw new Error('This classroom session is not currently active.');
-      navigate(/classroom/);
+      navigate('/classroom/' + data.id);
     } catch (err) { 
       setError(err.message || 'Failed to join classroom.'); 
     }
@@ -428,7 +428,7 @@ export default function StudentDashboard() {
 
                         <div className="mt-6 pt-4 border-t border-brand-100/40 dark:border-slate-800">
                           <button 
-                            onClick={() => navigate(/classroom/)} 
+                            onClick={() => navigate('/classroom/' + room.id)} 
                             className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-500/20 transition-all"
                           >
                             <Play className="w-3.5 h-3.5 fill-current" />

@@ -45,7 +45,7 @@ export default function Register() {
     setLoading(true);
     try {
       await signUp(email.trim(), password, fullName.trim(), role);
-      navigate(/verify-email?email=);
+      navigate('/verify-email?email=' + encodeURIComponent(email.trim()));
     } catch (err) {
       setError(err.message || 'Failed to create account.');
     } finally {
