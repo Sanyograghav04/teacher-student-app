@@ -45,7 +45,12 @@ export default function Register() {
     setLoading(true);
     try {
       await signUp(email.trim(), password, fullName.trim(), role);
-      navigate('/verify-email?email=' + encodeURIComponent(email.trim()));
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.user) {
+        navigate('/');
+      } else {
+        navigate('/verify-email?email=' + encodeURIComponent(email.trim()));
+      }
     } catch (err) {
       setError(err.message || 'Failed to create account.');
     } finally {

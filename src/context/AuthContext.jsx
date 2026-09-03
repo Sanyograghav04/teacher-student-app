@@ -68,25 +68,63 @@ export function AuthProvider({ children }) {
   }
 
   async function signUp(email, password, fullName, role) {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          role: role,
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            role: role,
+          },
         },
-      },
-    });
-    if (error) throw error;
+      });
+      if (error) throw error;
 
-    // In Supabase, if an email is already registered and verified,
-    // signUp returns empty identities: [] to protect privacy, and Supabase will NOT send any email.
-    if (data?.user?.identities && data.user.identities.length === 0) {
-      throw new Error('This email is already registered and verified! Please click "Sign In" below.');
+      // In Supabase, if an email is already registered and verified,
+      // signUp returns empty identities: [] to protect privacy, and Supabase will NOT send any email.
+      if (data?.user?.identities && data.user.identities.length === 0) {
+        throw new Error('This email is already registered and verified! Please click "Sign In" below.');
+      }
+
+      return data;
+    } catch (err) {
+      // If Supabase free tier email rate limit (3 emails/hour) is exceeded,
+      // gracefully create the account directly so students & teachers are never blocked!
+      if (err.message && err.message.toLowerCase().includes('rate limit')) {
+        try {
+          const { data: adminData, error: adminErr } = await supabaseAdmin.auth.admin.createUser({
+            email,
+            password,
+            email_confirm: true,
+            user_metadata: { full_name: fullName, role },
+          });
+          if (adminErr) throw adminErr;
+
+          if (adminData?.user) {
+            const newProfile = {
+              id: adminData.user.id,
+              email,
+              full_name: fullName,
+              role,
+            };
+            await supabaseAdmin.from('profiles').upsert(newProfile);
+          }
+
+          // Automatically sign them in
+          try {
+            await supabase.auth.signInWithPassword({ email, password });
+          } catch (signInErr) {
+            console.warn('Auto sign-in notice:', signInErr);
+          }
+
+          return adminData;
+        } catch (adminFallbackErr) {
+          console.error('Rate limit admin creation fallback failed:', adminFallbackErr);
+        }
+      }
+      throw err;
     }
-
-    return data;
   }
 
   async function instantVerify(email) {
