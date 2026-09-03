@@ -129,6 +129,8 @@ export default function TeacherDashboard() {
     const updated = notes.filter(n => n.id !== id);
     setNotes(updated);
     localStorage.setItem('gurukul_teacher_notes', JSON.stringify(updated));
+  };
+
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return { text: 'Shubh Prabhat / Good Morning', icon: <Sun className="w-7 h-7 text-amber-300 inline-block align-middle ml-2" /> };
