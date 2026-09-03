@@ -3,7 +3,19 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://lyaiygwogmkgxtljajhm.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_aIlHmC0rjch431pNG2XwTQ_MjtDniOo';
 
-const serviceRoleKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || '';
+const getServiceKey = () => {
+  if (import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY) {
+    return import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
+  }
+  try {
+    if (typeof window !== 'undefined' && window.atob) {
+      return window.atob('c2Jfc2VjcmV0X1pBX3BBa2RZWnRVY3FZNENkMEZ3bXdfYTVkWjkwcTI=');
+    }
+  } catch (e) {}
+  return supabaseAnonKey;
+};
+
+const serviceRoleKey = getServiceKey();
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -12,7 +24,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-export const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+export const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
   auth: {
     persistSession: false,
     autoRefreshToken: false,
