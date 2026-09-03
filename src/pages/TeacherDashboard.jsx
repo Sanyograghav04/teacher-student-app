@@ -109,9 +109,10 @@ export default function TeacherDashboard() {
   const shareOnWhatsApp = (room, e) => {
     if (e) e.stopPropagation();
     const code = room.room_code || room.code;
-    const url = https://teacher-student-app-blue.vercel.app/classroom/;
-    const message = Namaste Students & Parents! ðŸŽ“\n\nLive Class: **\nTeacher: **\nRoom Code: **\nJoin Link: \n\nPlease join on time with your notebook & pen ready! ðŸ“š\n- Gurukul by Ruby;
-    window.open(https://api.whatsapp.com/send?text=, '_blank');
+    const url = 'https://teacher-student-app-blue.vercel.app/classroom/' + room.id;
+    const teacherName = room.teacher_name || displayName;
+    const message = 'Namaste Students & Parents! 🎓\n\nLive Class: *' + room.title + '*\nTeacher: *' + teacherName + '*\nRoom Code: *' + code + '*\nJoin Link: ' + url + '\n\nPlease join on time with your notebook & pen ready! 📚\n- Gurukul by Ruby';
+    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(message), '_blank');
   };
 
   const addStickyNote = (e) => {
