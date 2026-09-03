@@ -4,11 +4,12 @@ import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import Navbar from '../components/Navbar';
 import ClassNotesManager from '../components/ClassNotesManager';
+import AccountSettingsModal from '../components/AccountSettingsModal';
 import { 
   KeyRound, Video, Play, RotateCcw, AlertCircle, Loader2, Radio, 
   ArrowRight, FileText, CreditCard, Copy, Check, Clock, Sparkles,
   Calendar, BookOpen, MessageCircle, Heart, CheckCircle2, BookmarkCheck,
-  GraduationCap, Sun, CloudSun, Moon
+  GraduationCap, Sun, CloudSun, Moon, Settings
 } from 'lucide-react';
 
 const DEFAULT_CHECKLIST = [
@@ -26,6 +27,7 @@ export default function StudentDashboard() {
   const [loading, setLoading] = useState(true);
   const [joining, setJoining] = useState(false);
   const [error, setError] = useState('');
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [copiedCode, setCopiedCode] = useState(null);
   const [checklist, setChecklist] = useState(() => {
     try {
@@ -122,17 +124,42 @@ export default function StudentDashboard() {
 
           <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="max-w-xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-semibold mb-3 text-brand-100">
-                <Calendar className="w-3.5 h-3.5 text-amber-300" />
-                <span>{todayFormatted}</span>
-                <span className="text-white/40">•</span>
-                <span>Gurukul by Ruby Learner</span>
+              <div className="flex items-center gap-3 mb-3 flex-wrap">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-semibold text-brand-100">
+                  <Calendar className="w-3.5 h-3.5 text-amber-300" />
+                  <span>{todayFormatted}</span>
+                  <span className="text-white/40">|</span>
+                  <span>Gurukul by Ruby Learner</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowSettingsModal(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 text-brand-100 hover:text-white text-xs font-semibold backdrop-blur-md border border-white/20 transition-all cursor-pointer shadow-sm"
+                  title="Upload profile picture, change avatar, or manage account"
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                  <span>Edit Profile & Avatar</span>
+                </button>
               </div>
               
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight flex items-center flex-wrap gap-2">
-                <span>{greeting.text}, {displayName}!</span>
-                {greeting.icon}
-              </h2>
+              <div className="flex items-center gap-3.5 mb-2">
+                <div 
+                  onClick={() => setShowSettingsModal(true)}
+                  className="w-12 h-12 rounded-2xl bg-white/20 hover:bg-white/30 border-2 border-white/30 backdrop-blur-md flex items-center justify-center font-extrabold text-lg text-white shadow-sm overflow-hidden cursor-pointer transition-transform hover:scale-105 shrink-0"
+                  title="Click to change profile picture or avatar"
+                >
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{displayName ? displayName[0].toUpperCase() : 'S'}</span>
+                  )}
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight flex items-center flex-wrap gap-2">
+                  <span>{greeting.text}, {displayName}!</span>
+                  {greeting.icon}
+                </h2>
+              </div>
               
               <p className="mt-2 text-brand-100 text-sm sm:text-base font-normal leading-relaxed">
                 Welcome to your study hub. Enter your live classes, learn directly from Ruby Ma'am & faculty, and download your study notes.
@@ -146,11 +173,11 @@ export default function StudentDashboard() {
                 <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
               </span>
               <div>
-                <div className="text-2xl font-extrabold text-white">
-                  {activeRooms.length}
+                <div className="font-extrabold text-sm text-white flex items-center gap-1.5">
+                  <span>Interactive Live</span>
                 </div>
-                <div className="text-[11px] font-medium text-brand-200">
-                  {activeRooms.length === 1 ? 'Live Class Active' : 'Live Classes Active'}
+                <div className="text-[11px] text-brand-200">
+                  {activeRooms.length} Active {activeRooms.length === 1 ? 'Class' : 'Classes'}
                 </div>
               </div>
             </div>
@@ -162,7 +189,7 @@ export default function StudentDashboard() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-start gap-3.5">
               <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 to-amber-500 text-white flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
-                ðŸ‘©â€ðŸ«
+                <GraduationCap className="w-6 h-6 text-white" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
@@ -170,11 +197,11 @@ export default function StudentDashboard() {
                     Message from Ruby Ma'am & Faculty
                   </h3>
                   <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 text-[10px] font-bold">
-                    Daily Notice ðŸ“Œ
+                    Daily Notice
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-                  "Namaste dear students! ðŸŒ¸ Remember: Consistent daily practice is the secret to scoring well. Keep your notebooks, formula sheets, and questions ready before every class. We are here to support you every step of the way!"
+                  "Namaste dear students! Remember: Consistent daily practice is the secret to scoring well. Keep your notebooks, formula sheets, and questions ready before every class. We are here to support you every step of the way!"
                 </p>
               </div>
             </div>
@@ -186,7 +213,7 @@ export default function StudentDashboard() {
               className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-bold text-xs border border-emerald-200 dark:border-emerald-800 transition-colors shrink-0"
             >
               <MessageCircle className="w-4 h-4 text-emerald-600" />
-              <span>Ask a Doubt on WhatsApp 💬</span>
+              <span>Ask a Doubt on WhatsApp</span>
             </a>
           </div>
         </div>
@@ -220,7 +247,7 @@ export default function StudentDashboard() {
               }`}
             >
               <FileText className="w-4 h-4" />
-              <span>Class Notes & Downloads 📚</span>
+              <span>Class Notes & Downloads</span>
             </button>
           </div>
 
@@ -246,10 +273,9 @@ export default function StudentDashboard() {
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-10 h-10 rounded-2xl bg-brand-50 dark:bg-brand-500/15 text-brand-600 dark:text-brand-400 flex items-center justify-center shadow-inner">
                       <KeyRound className="w-5 h-5" />
-                    </div>
-                    <div>
+                                       <div>
                       <h3 className="font-bold text-slate-800 dark:text-white text-base">
-                        Join Class by Code ðŸ”‘
+                        Join Class by Code
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
                         Provided by Ruby Ma'am / Teacher
@@ -285,7 +311,7 @@ export default function StudentDashboard() {
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
                         <>
-                          <span>Enter Live Classroom ðŸš€</span>
+                          <span>Enter Live Classroom</span>
                           <ArrowRight className="w-4 h-4" />
                         </>
                       )}
@@ -305,8 +331,8 @@ export default function StudentDashboard() {
                     <div className="flex items-center gap-2">
                       <BookmarkCheck className="w-5 h-5 text-emerald-500" />
                       <h3 className="font-bold text-slate-800 dark:text-white text-base">
-                        My Gurukul Daily Checklist ðŸ“
-                      </h3>
+                        My Gurukul Daily Checklist
+                      </h3>                   </h3>
                     </div>
                     <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
                       {checklist.filter(c => c.done).length} / {checklist.length} Completed
@@ -342,9 +368,9 @@ export default function StudentDashboard() {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
-                  <span>ðŸ’¡ Tip: Keep notes updated daily</span>
+                  <span>Tip: Keep notes updated daily</span>
                   <span className="text-brand-600 font-semibold cursor-pointer" onClick={() => setActiveTab('notes')}>
-                    View Study Notes â†’
+                    View Study Notes
                   </span>
                 </div>
               </div>
@@ -359,7 +385,7 @@ export default function StudentDashboard() {
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-slate-800 dark:text-white tracking-tight">
-                      Active Live Classrooms ðŸŽ¯
+                      Active Live Classrooms
                     </h3>
                     <p className="text-xs text-slate-400">
                       Join directly if your teacher has started a live lecture
@@ -387,7 +413,7 @@ export default function StudentDashboard() {
                     <Video className="w-7 h-7" />
                   </div>
                   <h4 className="text-base font-bold text-slate-800 dark:text-white">
-                    No Live Lectures Right Now â˜•
+                    No Live Lectures Right Now
                   </h4>
                   <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1 leading-relaxed">
                     Your teachers haven't started a session yet. If you have a room code from WhatsApp, enter it in the "Join Class by Code" box above!
@@ -447,7 +473,7 @@ export default function StudentDashboard() {
                             className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-500/20 transition-all"
                           >
                             <Play className="w-3.5 h-3.5 fill-current" />
-                            <span>Join Classroom Now ðŸŽ§</span>
+                            <span>Join Classroom Now</span>
                           </button>
                         </div>
                       </div>
@@ -464,6 +490,12 @@ export default function StudentDashboard() {
           <ClassNotesManager isTeacher={false} />
         )}
       </main>
+
+      {/* Account Settings & Profile / Avatar / Delete Modal */}
+      <AccountSettingsModal 
+        isOpen={showSettingsModal} 
+        onClose={() => setShowSettingsModal(false)} 
+      />
     </div>
   );
 }

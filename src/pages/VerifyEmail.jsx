@@ -42,10 +42,10 @@ export default function VerifyEmail() {
           <div className="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-brand-500/15 border border-brand-200 dark:border-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center mx-auto mb-5">
             <Mail className="w-8 h-8 animate-pulse" />
           </div>
-          <h3 className="text-2xl font-extrabold text-slate-800 dark:text-white mb-2">Check Your Inbox 📬</h3>
+          <h3 className="text-2xl font-extrabold text-slate-800 dark:text-white mb-2">Check Your Inbox</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">We sent a verification link to:<br /><span className="font-semibold text-brand-600 dark:text-brand-400 text-base">{email || 'your email'}</span></p>
           <div className="text-xs text-slate-600 dark:text-slate-300 mb-6 bg-brand-50/50 dark:bg-slate-800/70 p-4 rounded-xl border border-brand-100/60 dark:border-slate-700/60 text-left space-y-1">
-            <p className="font-semibold text-brand-700 dark:text-white">🚀 Next steps:</p>
+            <p className="font-semibold text-brand-700 dark:text-white">Next steps:</p>
             <p className="text-slate-500 dark:text-slate-400">1. Open the confirmation email from Gurukul.</p>
             <p className="text-slate-500 dark:text-slate-400">2. Click <strong>"Confirm your email address"</strong>.</p>
           </div>

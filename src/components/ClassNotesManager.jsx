@@ -262,7 +262,7 @@ export default function ClassNotesManager({ isTeacher = false }) {
             <FileText className="w-7 h-7" />
           </div>
           <h3 className="text-base font-bold text-slate-800 dark:text-white">
-            {searchQuery || selectedSubject !== 'All' ? 'No matching notes found' : 'No Class Notes Uploaded Yet 📚'}
+            {searchQuery || selectedSubject !== 'All' ? 'No matching notes found' : 'No Class Notes Uploaded Yet'}
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1 mb-5">
             {isTeacher 
@@ -404,7 +404,7 @@ export default function ClassNotesManager({ isTeacher = false }) {
               </div>
               <div>
                 <h3 className="text-xl font-extrabold text-slate-800 dark:text-white">
-                  Upload Class Notes 📝
+                  Upload Class Notes
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   Share study materials, PDFs, or assignments with students

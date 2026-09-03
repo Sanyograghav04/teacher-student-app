@@ -107,7 +107,7 @@ function TeacherModerationDrawer({ isOpen, onClose, isTeacher }) {
                     {p.name || p.identity} {isLocal && '(You)'}
                   </p>
                   <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
-                    {p.isSpeaking ? 'Speaking 🎙️' : 'Listening'}
+                    {p.isSpeaking ? 'Speaking' : 'Listening'}
                   </p>
                 </div>
               </div>

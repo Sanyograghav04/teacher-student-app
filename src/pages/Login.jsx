@@ -43,14 +43,14 @@ export default function Login() {
         <div className="inline-flex w-16 h-16 rounded-3xl bg-brand-600 items-center justify-center text-white shadow-lg shadow-brand-500/25 mb-4 transform hover:scale-105 transition-all duration-300">
           <BookOpen className="w-8 h-8" />
         </div>
-        <div className="flex items-center justify-center gap-1 mb-1">
+        <div className="flex items-center justify-center gap-2 mb-1">
           <h1 className="text-3xl font-extrabold text-brand-700 dark:text-white tracking-tight">
             Gurukul <span className="text-brand-500 font-bold text-2xl">by Ruby</span>
           </h1>
-          <span className="text-xl">ðŸŒ¸</span>
+          <Sparkles className="w-5 h-5 text-amber-500" />
         </div>
         <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-          Welcome back! Sign in to join your live classroom ðŸŽ’
+          Welcome back! Sign in to join your live classroom
         </p>
       </div>
 
@@ -107,7 +107,7 @@ export default function Login() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  placeholder="Enter your password"
                   className="block w-full pl-11 pr-11 py-3.5 bg-brand-50/50 dark:bg-slate-800/80 border border-brand-200/80 dark:border-slate-700/80 rounded-2xl text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition-all"
                 />
                 <button
@@ -130,7 +130,7 @@ export default function Login() {
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  <span>Sign In to Classroom ðŸš€</span>
+                  <span>Sign In to Classroom</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -145,7 +145,7 @@ export default function Login() {
                 to="/register" 
                 className="font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 hover:underline transition-colors"
               >
-                Create an Account âœï¸
+                Create an Account
               </Link>
             </p>
           </div>

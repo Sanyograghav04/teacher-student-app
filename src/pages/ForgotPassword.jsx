@@ -34,7 +34,7 @@ export default function ForgotPassword() {
         <div className="inline-flex w-16 h-16 rounded-2xl bg-brand-600 items-center justify-center text-white shadow-lg shadow-brand-500/25 mb-5">
           <KeyRound className="w-8 h-8" />
         </div>
-        <h2 className="text-3xl font-extrabold text-brand-700 dark:text-white tracking-tight">Reset Password 🔑</h2>
+        <h2 className="text-3xl font-extrabold text-brand-700 dark:text-white tracking-tight">Reset Password</h2>
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium">Enter your registered email to receive a recovery link</p>
       </div>
 
@@ -48,7 +48,7 @@ export default function ForgotPassword() {
           {success ? (
             <div className="text-center py-4">
               <div className="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-500 flex items-center justify-center mx-auto mb-4"><CheckCircle2 className="w-9 h-9" /></div>
-              <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Check Your Email ✉️</h3>
+              <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Check Your Email</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">We sent a password reset link to<br /><span className="text-brand-600 dark:text-brand-400 font-semibold">{email}</span>.</p>
               <Link to="/login" className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-xl bg-brand-50 dark:bg-slate-800 hover:bg-brand-100 dark:hover:bg-slate-700 text-brand-700 dark:text-slate-200 text-sm font-semibold transition-colors border border-brand-200 dark:border-slate-700">
                 <ArrowLeft className="w-4 h-4" /><span>Return to Sign In</span>

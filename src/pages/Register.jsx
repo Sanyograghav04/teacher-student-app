@@ -65,11 +65,11 @@ export default function Register() {
         <div className="inline-flex w-16 h-16 rounded-3xl bg-brand-600 items-center justify-center text-white shadow-lg shadow-brand-500/25 mb-4 transform hover:scale-105 transition-all duration-300">
           <GraduationCap className="w-8 h-8" />
         </div>
-        <div className="flex items-center justify-center gap-1.5 mb-1">
+        <div className="flex items-center justify-center gap-2 mb-1">
           <h1 className="text-3xl font-extrabold text-brand-700 dark:text-white tracking-tight">
             Join Gurukul <span className="text-brand-500 font-bold text-2xl">by Ruby</span>
           </h1>
-          <span className="text-xl">ðŸŒ¸</span>
+          <Sparkles className="w-5 h-5 text-amber-500" />
         </div>
         <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
           Create your account for personalized tuition & live mentorship
@@ -118,7 +118,7 @@ export default function Register() {
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-slate-800 dark:text-white">Student 🎒</h4>
+                    <h4 className="font-bold text-sm text-slate-800 dark:text-white">Student</h4>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Join live classes & learn</p>
                   </div>
                 </button>
@@ -149,7 +149,7 @@ export default function Register() {
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-slate-800 dark:text-white">Teacher / Tutor 👩‍🏫</h4>
+                    <h4 className="font-bold text-sm text-slate-800 dark:text-white">Teacher / Tutor</h4>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Host batches & manage fees</p>
                   </div>
                 </button>
@@ -228,7 +228,7 @@ export default function Register() {
                 ].map((r) => (
                   <div key={r.label} className={`flex items-center gap-1.5 ${r.ok ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                     <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9px] font-bold ${r.ok ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'}`}>
-                      ✓
+                      {r.ok ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : '-'}
                     </span>
                     <span>{r.label}</span>
                   </div>
@@ -245,7 +245,7 @@ export default function Register() {
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  <span>Create {role === 'teacher' ? 'Faculty' : 'Student'} Account ðŸŽ“</span>
+                  <span>Create {role === 'teacher' ? 'Faculty' : 'Student'} Account</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}

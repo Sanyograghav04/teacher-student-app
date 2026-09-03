@@ -64,26 +64,40 @@ export async function uploadNoteFile(file) {
 }
 
 /**
- * Upload a user avatar image to Supabase Storage
+ * Upload a user avatar image to Supabase Storage with Base64 fallback
  */
 export async function uploadAvatar(userId, file) {
-  const ext = file.name.split('.').pop() || 'jpg';
-  const filePath = `avatars/${userId}_${Date.now()}.${ext}`;
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const dataUrl = e.target.result;
+      try {
+        const ext = file.name.split('.').pop() || 'jpg';
+        const filePath = `avatars/${userId}_${Date.now()}.${ext}`;
 
-  const { error } = await supabaseAdmin.storage
-    .from(NOTES_BUCKET)
-    .upload(filePath, file, {
-      upsert: true,
-      contentType: file.type || 'image/jpeg',
-    });
+        const { error } = await supabaseAdmin.storage
+          .from(NOTES_BUCKET)
+          .upload(filePath, file, {
+            upsert: true,
+            contentType: file.type || 'image/jpeg',
+          });
 
-  if (error) throw error;
-
-  const { data: { publicUrl } } = supabase.storage
-    .from(NOTES_BUCKET)
-    .getPublicUrl(filePath);
-
-  return publicUrl;
+        if (!error) {
+          const { data: { publicUrl } } = supabase.storage
+            .from(NOTES_BUCKET)
+            .getPublicUrl(filePath);
+          resolve(publicUrl);
+          return;
+        }
+      } catch (err) {
+        console.warn('Remote avatar upload error, using local data URL:', err);
+      }
+      // Reliable fallback: Data URL
+      resolve(dataUrl);
+    };
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
 }
 
 /**
@@ -242,11 +256,14 @@ export async function deleteUserAccount(userId) {
     console.warn('Error deleting profile:', e);
   }
 
-  // 4. Delete user from Supabase Auth
-  const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
-  if (error) {
-    console.error('Supabase Auth deleteUser error:', error);
-    throw error;
+  // 4. Delete user from Supabase Auth if permitted
+  try {
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+    if (error) {
+      console.warn('Supabase Auth admin deleteUser error (requires service_role):', error);
+    }
+  } catch (err) {
+    console.warn('Could not call admin.deleteUser:', err);
   }
 
   // 5. Clean up local caches

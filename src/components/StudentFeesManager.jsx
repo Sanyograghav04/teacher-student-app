@@ -18,6 +18,8 @@ import {
   Loader2
 } from 'lucide-react';
 
+const RUPEE = '\u20B9';
+
 export default function StudentFeesManager() {
   const { user } = useAuth();
   const [students, setStudents] = useState([]);
@@ -295,12 +297,12 @@ export default function StudentFeesManager() {
               Total Target
             </span>
             <div className="w-8 h-8 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xs">
-              ₹
+              {RUPEE}
             </div>
           </div>
           <div className="mt-3">
             <div className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              ₹{totalTarget.toLocaleString()}
+              {RUPEE}{totalTarget.toLocaleString()}
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Across all enrolled students</p>
           </div>
@@ -318,7 +320,7 @@ export default function StudentFeesManager() {
           <div className="mt-3">
             <div className="flex items-baseline justify-between">
               <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
-                ₹{totalCollected.toLocaleString()}
+                {RUPEE}{totalCollected.toLocaleString()}
               </span>
               <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
                 {collectionPercentage}%
@@ -344,7 +346,7 @@ export default function StudentFeesManager() {
           </div>
           <div className="mt-3">
             <div className="text-2xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight">
-              ₹{totalPending.toLocaleString()}
+              {RUPEE}{totalPending.toLocaleString()}
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Pending collection</p>
           </div>
@@ -523,8 +525,8 @@ export default function StudentFeesManager() {
 
                   <div className="bg-brand-50 dark:bg-slate-800/80 p-3 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 my-2">
                     <div className="flex justify-between items-center text-xs mb-1.5">
-                      <span className="text-slate-500 dark:text-slate-400 font-medium">Paid: <strong className="text-emerald-600 dark:text-emerald-400 font-bold">₹{paid.toLocaleString()}</strong></span>
-                      <span className="text-slate-500 dark:text-slate-400 font-medium">Total: <strong className="text-slate-800 dark:text-slate-200 font-bold">₹{total.toLocaleString()}</strong></span>
+                      <span className="text-slate-500 dark:text-slate-400 font-medium">Paid: <strong className="text-emerald-600 dark:text-emerald-400 font-bold">{RUPEE}{paid.toLocaleString()}</strong></span>
+                      <span className="text-slate-500 dark:text-slate-400 font-medium">Total: <strong className="text-slate-800 dark:text-slate-200 font-bold">{RUPEE}{total.toLocaleString()}</strong></span>
                     </div>
                     <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
                       <div
@@ -536,7 +538,7 @@ export default function StudentFeesManager() {
                     </div>
                     {pending > 0 && (
                       <div className="mt-1 text-right text-[10px] text-rose-600 dark:text-rose-400 font-bold">
-                        Pending: ₹{pending.toLocaleString()}
+                        Pending: {RUPEE}{pending.toLocaleString()}
                       </div>
                     )}
                   </div>
@@ -664,7 +666,7 @@ export default function StudentFeesManager() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
-                    Total Fees (₹) *
+                    Total Fees ({RUPEE}) *
                   </label>
                   <input
                     type="number"
@@ -679,7 +681,7 @@ export default function StudentFeesManager() {
 
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
-                    Paid Fees (₹)
+                    Paid Fees ({RUPEE})
                   </label>
                   <input
                     type="number"
@@ -764,13 +766,13 @@ export default function StudentFeesManager() {
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
               Student: <strong className="text-slate-800 dark:text-slate-200">{showPaymentModal.student_name}</strong>
               <br />
-              Pending Balance: <strong className="text-rose-600 dark:text-rose-400">₹{Math.max(0, (showPaymentModal.total_fees || 0) - (showPaymentModal.paid_fees || 0)).toLocaleString()}</strong>
+              Pending Balance: <strong className="text-rose-600 dark:text-rose-400">{RUPEE}{Math.max(0, (showPaymentModal.total_fees || 0) - (showPaymentModal.paid_fees || 0)).toLocaleString()}</strong>
             </p>
 
             <form onSubmit={handleRecordPayment} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
-                  Payment Amount Received (₹)
+                  Payment Amount Received ({RUPEE})
                 </label>
                 <input
                   type="number"

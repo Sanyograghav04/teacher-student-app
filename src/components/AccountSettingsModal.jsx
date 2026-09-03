@@ -126,7 +126,7 @@ export default function AccountSettingsModal({ isOpen, onClose }) {
         await refreshProfile();
       }
 
-      setProfileSuccess('Profile and display name updated successfully! ✨');
+      setProfileSuccess('Profile and display name updated successfully!');
       setTimeout(() => setProfileSuccess(''), 3500);
     } catch (err) {
       console.error('Update profile error:', err);
@@ -155,7 +155,7 @@ export default function AccountSettingsModal({ isOpen, onClose }) {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
 
-      setPasswordSuccess('Password updated successfully! 🔐');
+      setPasswordSuccess('Password updated successfully!');
       setNewPassword('');
       setConfirmPassword('');
       setTimeout(() => setPasswordSuccess(''), 3500);

@@ -32,10 +32,10 @@ export default function Navbar() {
             <h1 className="font-extrabold text-lg text-brand-700 dark:text-white tracking-tight leading-tight flex items-center gap-1.5">
               <span>Gurukul</span>
               <span className="text-brand-500 font-bold text-sm">by Ruby</span>
-              <span className="text-xs">ðŸŒ¸</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
             </h1>
             <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium -mt-0.5 tracking-wide">
-              Tuition & Live Mentorship âœ¨
+              Tuition & Live Mentorship
             </p>
           </div>
         </div>

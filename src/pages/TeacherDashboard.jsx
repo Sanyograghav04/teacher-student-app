@@ -5,10 +5,12 @@ import { supabase } from '../lib/supabase';
 import Navbar from '../components/Navbar';
 import StudentFeesManager from '../components/StudentFeesManager';
 import ClassNotesManager from '../components/ClassNotesManager';
+import AccountSettingsModal from '../components/AccountSettingsModal';
 import { 
   Plus, Video, Trash2, Copy, Check, Play, RotateCcw, AlertCircle, Loader2, 
   Sparkles, Users, Clock, X, FileText, Share2, Pin, MessageCircle, Heart,
-  BookOpen, Calendar, HelpCircle, CheckCircle2, Sun, CloudSun, Moon, Rocket
+  BookOpen, Calendar, HelpCircle, CheckCircle2, Sun, CloudSun, Moon, Rocket,
+  Settings
 } from 'lucide-react';
 
 const DAILY_QUOTES = [
@@ -25,6 +27,7 @@ export default function TeacherDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [title, setTitle] = useState('');
   const [subject, setSubject] = useState('Mathematics');
   const [creating, setCreating] = useState(false);
@@ -111,7 +114,7 @@ export default function TeacherDashboard() {
     const code = room.room_code || room.code;
     const url = 'https://teacher-student-app-blue.vercel.app/classroom/' + room.id;
     const teacherName = room.teacher_name || displayName;
-    const message = 'Namaste Students & Parents! 🎓\n\nLive Class: *' + room.title + '*\nTeacher: *' + teacherName + '*\nRoom Code: *' + code + '*\nJoin Link: ' + url + '\n\nPlease join on time with your notebook & pen ready! 📚\n- Gurukul by Ruby';
+    const message = 'Namaste Students and Parents!\n\nLive Class: *' + room.title + '*\nTeacher: *' + teacherName + '*\nRoom Code: *' + code + '*\nJoin Link: ' + url + '\n\nPlease join on time with your notebook and pen ready!\n- Gurukul by Ruby';
     window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(message), '_blank');
   };
 
@@ -159,16 +162,42 @@ export default function TeacherDashboard() {
 
           <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-semibold mb-3 text-brand-100">
-                <Calendar className="w-3.5 h-3.5 text-amber-300" />
-                <span>{todayFormatted}</span>
-                <span className="text-white/40">•</span>
-                <span>Gurukul by Ruby Faculty</span>
+              <div className="flex items-center gap-3 mb-3 flex-wrap">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-semibold text-brand-100">
+                  <Calendar className="w-3.5 h-3.5 text-amber-300" />
+                  <span>{todayFormatted}</span>
+                  <span className="text-white/40">|</span>
+                  <span>Gurukul by Ruby Faculty</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowSettingsModal(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 text-brand-100 hover:text-white text-xs font-semibold backdrop-blur-md border border-white/20 transition-all cursor-pointer shadow-sm"
+                  title="Upload profile picture, change avatar, or manage account"
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                  <span>Edit Profile & Avatar</span>
+                </button>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center flex-wrap gap-2">
-                <span>{todayGreeting.text}, {displayName}!</span>
-                {todayGreeting.icon}
-              </h2>
+
+              <div className="flex items-center gap-3.5 mb-2">
+                <div 
+                  onClick={() => setShowSettingsModal(true)}
+                  className="w-12 h-12 rounded-2xl bg-white/20 hover:bg-white/30 border-2 border-white/30 backdrop-blur-md flex items-center justify-center font-extrabold text-lg text-white shadow-sm overflow-hidden cursor-pointer transition-transform hover:scale-105 shrink-0"
+                  title="Click to change profile picture or avatar"
+                >
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{displayName ? displayName[0].toUpperCase() : 'T'}</span>
+                  )}
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center flex-wrap gap-2">
+                  <span>{todayGreeting.text}, {displayName}!</span>
+                  {todayGreeting.icon}
+                </h2>
+              </div>
               <p className="mt-2 text-brand-100 text-sm sm:text-base font-normal leading-relaxed">
                 Welcome to your teaching desk. Start live lectures for your batches, share links directly on WhatsApp, and manage student fees.
               </p>
@@ -195,23 +224,23 @@ export default function TeacherDashboard() {
                   <div className="font-extrabold text-base text-white">{rooms.length}</div>
                   <div className="text-[10px] text-brand-200 uppercase">Batches</div>
                 </div>
-                <div className="w-px h-6 bg-white/20" />
+                <div className="h-6 w-px bg-white/20" />
                 <div className="text-center px-2">
-                  <div className="font-extrabold text-base text-emerald-300">Active</div>
-                  <div className="text-[10px] text-brand-200 uppercase">Status</div>
+                  <div className="font-extrabold text-base text-white">{notes.length}</div>
+                  <div className="text-[10px] text-brand-200 uppercase">Notes</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Ma'am's Desk Notice Board / Sticky Reminders */}
+        {/* Teacher Desk Scratchpad (Sticky Notes) */}
         <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-brand-100/80 dark:border-slate-800 p-5 shadow-soft">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Pin className="w-4 h-4 text-amber-500 fill-amber-500" />
               <h3 className="text-sm font-bold text-slate-800 dark:text-white">
-                Teacher's Desk Reminders ðŸ“Œ
+                Teacher's Desk Reminders
               </h3>
               <span className="text-[11px] text-slate-400">Personal scratchpad</span>
             </div>
@@ -246,7 +275,7 @@ export default function TeacherDashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {notes.length === 0 ? (
               <div className="col-span-full py-2 text-center text-xs text-slate-400 italic">
-                No reminders yet. Click "+ Add Note" to jot down tests, homework, or student follow-ups! ðŸ“
+                No reminders yet. Click "+ Add Note" to jot down tests, homework, or student follow-ups!
               </div>
             ) : (
               notes.map((n) => (
@@ -309,7 +338,7 @@ export default function TeacherDashboard() {
               }`}
             >
               <Users className="w-4 h-4" />
-              <span>Students & Fee Register ðŸ’°</span>
+              <span>Students & Fee Register</span>
             </button>
           </div>
 
@@ -345,7 +374,7 @@ export default function TeacherDashboard() {
                   <Video className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-800 dark:text-white">
-                  No Active Classrooms Right Now ðŸ“š
+                  No Active Classrooms Right Now
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-2 mb-6 leading-relaxed">
                   Start your first live class! Once created, you can send the join link and code directly to students or parents via WhatsApp with one click.
@@ -436,7 +465,7 @@ export default function TeacherDashboard() {
                           className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-500/20 transition-all"
                         >
                           <Play className="w-3.5 h-3.5 fill-current" />
-                          <span>Enter Classroom ðŸŽ™ï¸</span>
+                          <span>Enter Classroom</span>
                         </button>
                         
                         <button
@@ -483,8 +512,8 @@ export default function TeacherDashboard() {
               </div>
               <div>
                 <h3 className="text-xl font-extrabold text-slate-800 dark:text-white">
-                  Launch Live Classroom ðŸŽ“
-                </h3>
+                  Launch Live Classroom
+                </h3>          </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   Gurukul by Ruby Virtual Classroom
                 </p>
@@ -551,13 +580,19 @@ export default function TeacherDashboard() {
                   className="flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-500/20 transition-all disabled:opacity-50"
                 >
                   {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                  <span>Launch Now ðŸš€</span>
+                  <span>Launch Now</span>
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      {/* Account Settings & Profile / Avatar / Delete Modal */}
+      <AccountSettingsModal 
+        isOpen={showSettingsModal} 
+        onClose={() => setShowSettingsModal(false)} 
+      />
     </div>
   );
 }

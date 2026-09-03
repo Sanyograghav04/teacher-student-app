@@ -15,7 +15,7 @@ export default function ThemeToggle({ className = '' }) {
           ? 'bg-slate-800 border-slate-700 hover:bg-slate-700 text-amber-400' 
           : 'bg-brand-50 border-brand-200 hover:bg-brand-100 text-brand-600'
       } ${className}`}
-      title={isDark ? '☀️ Switch to Day Mode' : '🌙 Switch to Night Mode'}
+      title={isDark ? 'Switch to Day Mode' : 'Switch to Night Mode'}
     >
       <div className={`transition-all duration-300 ${isDark ? 'rotate-0 scale-100' : 'rotate-90 scale-0 w-0 overflow-hidden'}`}>
         <Sun className="w-4 h-4" />
