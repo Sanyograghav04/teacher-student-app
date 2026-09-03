@@ -513,7 +513,7 @@ export default function TeacherDashboard() {
               <div>
                 <h3 className="text-xl font-extrabold text-slate-800 dark:text-white">
                   Launch Live Classroom
-                </h3>          </h3>
+                </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   Gurukul by Ruby Virtual Classroom
                 </p>

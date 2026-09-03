@@ -332,7 +332,7 @@ export default function StudentDashboard() {
                       <BookmarkCheck className="w-5 h-5 text-emerald-500" />
                       <h3 className="font-bold text-slate-800 dark:text-white text-base">
                         My Gurukul Daily Checklist
-                      </h3>                   </h3>
+                      </h3>
                     </div>
                     <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
                       {checklist.filter(c => c.done).length} / {checklist.length} Completed
